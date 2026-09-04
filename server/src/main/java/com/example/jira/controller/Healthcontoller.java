@@ -15,8 +15,8 @@ public class Healthcontoller {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    @Value("${spring.data.mongodb.uri}")
-    private String mongoUri;
+    @Value("${spring.mongodb.uri}")
+private String mongoUri;
 
     @GetMapping("/health")
     public String healthcheck() {
