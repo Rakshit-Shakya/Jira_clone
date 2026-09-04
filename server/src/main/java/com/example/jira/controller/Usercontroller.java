@@ -36,7 +36,15 @@ public class Usercontroller {
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole(user.getRole() == null ? "USER" : user.getRole());
+        String requestedRole = user.getRole();
+
+if ("ADMIN".equalsIgnoreCase(requestedRole)) {
+    user.setRole("USER");
+} else if (requestedRole == null || requestedRole.isBlank()) {
+    user.setRole("USER");
+} else {
+    user.setRole(requestedRole.toUpperCase());
+}
 
         return userRepository.save(user);
     }
@@ -55,6 +63,9 @@ public class Usercontroller {
                 user.getPassword())) {
             throw new RuntimeException("Invalid credentials");
         }
+
+        user.setLastLoginAt(java.time.Instant.now());
+        user = userRepository.save(user);
 
         return user; // later replace with JWT token
     }

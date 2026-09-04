@@ -1,5 +1,4 @@
 package com.example.jira.controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import com.example.jira.model.Issue;
 import com.example.jira.model.Sprint;
 import com.example.jira.repository.IssueRepository;
@@ -29,10 +28,18 @@ public class SprintController {
     // CREATE SPRINT
     // =========================
     @PostMapping
-    public Sprint createSprint(@RequestBody Sprint sprint) {
-        sprint.setStatus("PLANNED");
-        return sprintRepository.save(sprint);
+public Sprint createSprint(@RequestBody Sprint sprint) {
+
+    if (sprint.getProjectId() == null ||
+            !ObjectId.isValid(sprint.getProjectId())) {
+
+        throw new RuntimeException("Valid projectId is required");
     }
+
+    sprint.setStatus("PLANNED");
+
+    return sprintRepository.save(sprint);
+}
 
     // =========================
     // GET SPRINTS BY PROJECT
@@ -103,16 +110,31 @@ public class SprintController {
     // ASSIGN ISSUE TO SPRINT
     // =========================
     @PutMapping("/{sprintId}/issues/{issueId}")
-    public Issue addIssueToSprint(
-            @PathVariable String sprintId,
-            @PathVariable String issueId) {
+public Issue addIssueToSprint(
+        @PathVariable String sprintId,
+        @PathVariable String issueId) {
 
-        Issue issue = issueRepository.findById(new ObjectId(issueId))
-                .orElseThrow(() -> new RuntimeException("Issue not found"));
-
-        issue.setUpdatedAt(Instant.now());
-        issue.setProjectId(sprintId); // OR add sprintId field if you prefer
-
-        return issueRepository.save(issue);
+    if (!ObjectId.isValid(sprintId) || !ObjectId.isValid(issueId)) {
+        throw new RuntimeException("Invalid sprint or issue id");
     }
+
+    Sprint sprint = sprintRepository
+            .findById(new ObjectId(sprintId))
+            .orElseThrow(() -> new RuntimeException("Sprint not found"));
+
+    Issue issue = issueRepository
+            .findById(new ObjectId(issueId))
+            .orElseThrow(() -> new RuntimeException("Issue not found"));
+
+    if (!sprint.getProjectId().equals(issue.getProjectId())) {
+        throw new RuntimeException(
+                "Issue and sprint must belong to the same project"
+        );
+    }
+
+    issue.setSprintId(sprintId);
+    issue.setUpdatedAt(Instant.now());
+
+    return issueRepository.save(issue);
+}
 }

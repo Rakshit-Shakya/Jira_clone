@@ -56,10 +56,10 @@ const CreateIssuemodel = ({ isOpen, onClose }: any) => {
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user && !selectedProject) {
-      setError("NO project and no user present");
-      return;
-    }
+    if (!user || !selectedProject) {
+  setError("A logged-in user and selected project are required.");
+  return;
+}
     try {
       setIsloading(true);
       await axiosInstance.post("/api/issues", {
@@ -75,9 +75,14 @@ const CreateIssuemodel = ({ isOpen, onClose }: any) => {
       });
 
       onClose();
-    } catch (error) {
-      console.log(error);
-    } finally {
+    } catch (error: any) {
+  console.error(error);
+
+  setError(
+    error.response?.data?.message ||
+      "Failed to create issue. Please try again.",
+  );
+} finally {
       setIsloading(false);
       setFormData({
         title: "",

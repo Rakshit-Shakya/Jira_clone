@@ -3,7 +3,7 @@ package com.example.jira.model;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
+import java.util.ArrayList;
 import java.time.Instant;
 import java.util.List;
 
@@ -20,11 +20,12 @@ public class Issue {
     private String status;      
     private String priority;    
     private String projectId;
+    private String sprintId;
     private String reporterId;
     private String assigneeId;
     private int order;
 
-    private List<String> comments;
+    private List<String> comments = new java.util.ArrayList<>();
 
     private Instant createdAt = Instant.now();
     private Instant updatedAt = Instant.now();
@@ -39,6 +40,14 @@ public class Issue {
 
     public void setId(ObjectId id) {
         this.id = id;
+    }
+
+    public String getSprintId() {
+    return sprintId;
+    }
+
+    public void setSprintId(String sprintId) {
+    this.sprintId = sprintId;
     }
 
     public String getKey() { return key; }

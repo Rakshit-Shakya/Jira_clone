@@ -69,11 +69,16 @@ export default function Page() {
         setIsLoading(false);
         return;
       }
-      await axiosInstance.post("/api/projects", {
-        name: projectData.name,
-        key: projectData.key,
-        ownerId: user.id,
-      });
+      const res = await axiosInstance.post("/api/projects", {
+  name: projectData.name.trim(),
+  key: projectData.key.trim(),
+  ownerId: user.id,
+  memberIds: [user.id],
+});
+
+const createdProject = res.data;
+
+router.push("/");
 
       router.push("/");
     } catch (err) {

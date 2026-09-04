@@ -25,7 +25,7 @@ const Sidebar = () => {
   const router = useRouter();
   const { user, logout, selectedProject, setSelectedProject } = useAuth();
   const [project, setProject] = useState([]);
-  const [loading, setloading] = useState(false);
+  const [loading, setloading] = useState(true);
   const [showprojectmenu, setShowprojectmenu] = useState(false);
   const [showcreateissuemodel, setShowcreateissuemodel] = useState(false);
   useEffect(() => {
@@ -126,8 +126,11 @@ const Sidebar = () => {
                 {project.map((project: any) => (
                   <button
                     key={project.id}
-                    className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 hover:bg-[#EBECF0] text-[#42526E]"
-                    }`}
+                    onClick={() => {
+                      setSelectedProject(project);
+                      setShowprojectmenu(false);
+                    }}
+                    className="w-full text-left px-3 py-2 text-sm flex items-center gap-2 hover:bg-[#EBECF0] text-[#42526E]"
                   >
                     <div className="h-3 w-3 rounded-full bg-blue-500" />
                     {project.name}
@@ -232,11 +235,10 @@ function NavItem({ href, icon, label, active }: any) {
   return (
     <Link
       href={href}
-      className={`flex items-center gap-3 rounded px-2 py-1.5 text-sm font-medium transition-colors ${
-        active
+      className={`flex items-center gap-3 rounded px-2 py-1.5 text-sm font-medium transition-colors ${active
           ? "bg-[#DEEBFF] text-[#0052CC]"
           : "hover:bg-[#EBECF0] text-[#42526E]"
-      }`}
+        }`}
     >
       {icon}
       <span>{label}</span>

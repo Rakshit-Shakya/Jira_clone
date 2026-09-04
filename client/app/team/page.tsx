@@ -27,7 +27,7 @@ const page = () => {
       const res = await axiosInstance.get(
         `/api/projects/${selectedProject?.id}`,
       );
-      setTeamMembers(res.data.members || []);
+      setTeamMembers(res.data?.members ?? []);
     } catch (error) {
       console.error(error);
     } finally {
@@ -103,7 +103,7 @@ const page = () => {
     if (!confirm(`Remove ${name} from project?`)) return;
     try {
       setLoading(true);
-      const updatedmemberids = selectedProject?.memberIds?.filter(
+      const updatedmemberids = (selectedProject.memberIds ?? []).filter(
         (id: string) => id !== userid,
       );
       await axiosInstance.put(`/api/projects/${selectedProject.id}`, {
