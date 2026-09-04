@@ -2,6 +2,8 @@ package com.example.jira.controller;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,7 @@ import com.example.jira.repository.UserRepository;
 @RestController
 @RequestMapping("/api/users")
 public class Usercontroller {
+
     @Autowired
     private UserRepository userRepository;
 
@@ -29,45 +32,89 @@ public class Usercontroller {
     // SIGNUP
     // =========================
     @PostMapping("/signup")
-    public User signup(@RequestBody User user) {
+    public ResponseEntity<?> signup(@RequestBody User user) {
+
+        if (user.getName() == null || user.getName().isBlank()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(java.util.Map.of("message", "Name is required"));
+        }
+
+        if (user.getEmail() == null || user.getEmail().isBlank()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(java.util.Map.of("message", "Email is required"));
+        }
+
+        if (user.getPassword() == null || user.getPassword().isBlank()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(java.util.Map.of("message", "Password is required"));
+        }
 
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists");
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(java.util.Map.of("message", "Email already exists"));
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        String requestedRole = user.getRole();
 
-if ("ADMIN".equalsIgnoreCase(requestedRole)) {
-    user.setRole("USER");
-} else if (requestedRole == null || requestedRole.isBlank()) {
-    user.setRole("USER");
-} else {
-    user.setRole(requestedRole.toUpperCase());
-}
+        // Public signup must never allow a user to create an ADMIN account.
+        user.setRole("USER");
 
-        return userRepository.save(user);
+        if (user.getGroup() == null) {
+            user.setGroup("");
+        }
+
+        return ResponseEntity.ok(userRepository.save(user));
     }
 
     // =========================
     // LOGIN
     // =========================
     @PostMapping("/login")
-    public User login(@RequestBody User loginRequest) {
+    public ResponseEntity<?> login(@RequestBody User loginRequest) {
 
-        User user = userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        if (loginRequest.getEmail() == null ||
+                loginRequest.getEmail().isBlank()) {
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(java.util.Map.of("message", "Email is required"));
+        }
+
+        if (loginRequest.getPassword() == null ||
+                loginRequest.getPassword().isBlank()) {
+
+            return ResponseEntity
+                    .badRequest()
+                    .body(java.util.Map.of("message", "Password is required"));
+        }
+
+        User user = userRepository
+                .findByEmail(loginRequest.getEmail())
+                .orElse(null);
+
+        if (user == null) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(java.util.Map.of("message", "Invalid email or password"));
+        }
 
         if (!passwordEncoder.matches(
                 loginRequest.getPassword(),
                 user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(java.util.Map.of("message", "Invalid email or password"));
         }
 
         user.setLastLoginAt(java.time.Instant.now());
         user = userRepository.save(user);
 
-        return user; // later replace with JWT token
+        return ResponseEntity.ok(user);
     }
 
     // =========================
@@ -77,6 +124,7 @@ if ("ADMIN".equalsIgnoreCase(requestedRole)) {
     public User getUserById(@PathVariable String id) {
 
         ObjectId objectId;
+
         try {
             objectId = new ObjectId(id);
         } catch (IllegalArgumentException e) {
@@ -96,6 +144,7 @@ if ("ADMIN".equalsIgnoreCase(requestedRole)) {
             @RequestBody User updatedUser) {
 
         ObjectId objectId;
+
         try {
             objectId = new ObjectId(id);
         } catch (IllegalArgumentException e) {
@@ -105,9 +154,19 @@ if ("ADMIN".equalsIgnoreCase(requestedRole)) {
         User user = userRepository.findById(objectId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        user.setName(updatedUser.getName());
-        user.setGroup(updatedUser.getGroup());
-        user.setAvatar(updatedUser.getAvatar());
+        if (updatedUser.getName() != null &&
+                !updatedUser.getName().isBlank()) {
+
+            user.setName(updatedUser.getName().trim());
+        }
+
+        if (updatedUser.getGroup() != null) {
+            user.setGroup(updatedUser.getGroup());
+        }
+
+        if (updatedUser.getAvatar() != null) {
+            user.setAvatar(updatedUser.getAvatar());
+        }
 
         return userRepository.save(user);
     }
