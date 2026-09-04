@@ -23,6 +23,7 @@ const page = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [, setSelectedProject] = useState<any>(null);
   const { user } = useAuth();
   // const currentProject = {
   //   id: "proj-1",
@@ -71,13 +72,15 @@ const page = () => {
         setIsLoading(false);
         return;
       }
-      await axiosInstance.post("/api/projects", {
-        name: formData.name,
-        key: formData.key,
-        ownerId: user?.id,
-      });
-      // Redirect to board
-      router.push("/");
+      const res = await axiosInstance.post("/api/projects", {
+  name: formData.name.trim(),
+  key: formData.key.trim(),
+  ownerId: user?.id,
+  memberIds: user?.id ? [user.id] : [],
+});
+      
+     setSelectedProject(res.data);
+router.push("/");
     } catch (err) {
       setError("Failed to create project. Please try again.");
     } finally {
@@ -196,3 +199,4 @@ const page = () => {
 };
 
 export default page;
+

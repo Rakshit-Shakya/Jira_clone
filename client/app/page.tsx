@@ -1,11 +1,18 @@
+"use client";
 import KanbanBoard from "@/components/KanbanBoard";
 import { AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
 import { ChevronRight, MoreHorizontal, Share2 } from "lucide-react";
-import { Suspense } from "react";
+import { Suspense, use } from "react";
+import { useState } from "react";
+
 
 export default function Home() {
+
+  const [onlyMyIssues, setOnlyMyIssues] = useState(false);
+const [recentlyUpdated, setRecentlyUpdated] = useState(false);
+
   return (
     <div className="flex h-full flex-col p-6 overflow-hidden">
       <div className="mb-6 flex flex-col gap-4">
@@ -44,12 +51,17 @@ export default function Home() {
             ))}
           </div>
           <Button
-            variant="outline"
-            size="sm"
-            className="h-8 rounded-full border-dashed bg-transparent"
-          >
-            Only My Issues
-          </Button>
+  variant="outline"
+  size="sm"
+  onClick={() => setOnlyMyIssues((prev) => !prev)}
+  className={`h-8 rounded-full border-dashed ${
+    onlyMyIssues
+      ? "bg-[#DEEBFF] border-[#0052CC] text-[#0052CC]"
+      : "bg-transparent"
+  }`}
+>
+  Only My Issues
+</Button>
           <Button
             variant="outline"
             size="sm"

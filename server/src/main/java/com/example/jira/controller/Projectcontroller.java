@@ -19,6 +19,9 @@ import com.example.jira.model.User;
 import com.example.jira.repository.Projectrepository;
 import com.example.jira.repository.UserRepository;
 
+/**
+ * Projectcontroller
+ */
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/projects")
@@ -34,6 +37,19 @@ public class Projectcontroller {
 
     @PostMapping
     public Project createProject(@RequestBody Project project) {
+
+        if (project.getOwnerId() == null || project.getOwnerId().isBlank()) {
+            throw new RuntimeException("Project owner is required");
+        }
+
+        if (project.getMemberIds() == null) {
+            project.setMemberIds(new java.util.ArrayList<>());
+        }
+
+        if (!project.getMemberIds().contains(project.getOwnerId())) {
+            project.getMemberIds().add(project.getOwnerId());
+        }
+
         return projectrepository.save(project);
     }
 
@@ -52,7 +68,12 @@ public class Projectcontroller {
                 .orElse(null);
 
         // Fetch members
-        List<ObjectId> memberObjectIds = project.getMemberIds().stream()
+        List<ObjectId> memberObjectIds =
+        (project.getMemberIds() == null
+                ? java.util.Collections.<String>emptyList()
+                : project.getMemberIds())
+                .stream()
+                .filter(memberId -> memberId != null && ObjectId.isValid(memberId))
                 .map(ObjectId::new)
                 .toList();
 
@@ -67,19 +88,30 @@ public class Projectcontroller {
     }
 
     @PutMapping("/{id}")
-    public Project updaProject(@PathVariable String id, @RequestBody Project updated) {
-        Project project = projectrepository.findById(new ObjectId(id))
-                .orElseThrow(() -> new RuntimeException("project not found"));
+public Project updaProject(
+        @PathVariable String id,
+        @RequestBody Project updated) {
 
-        project.setName(updated.getName());
-        project.setDescription(updated.getDescription());
-        project.setMemberIds(updated.getMemberIds());
-        return projectrepository.save(project);
+    if (!ObjectId.isValid(id)) {
+        throw new RuntimeException("Invalid project id");
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteproject(@PathVariable String id) {
-        projectrepository.deleteById(new ObjectId(id));
+    Project project = projectrepository.findById(new ObjectId(id))
+            .orElseThrow(() -> new RuntimeException("Project not found"));
+
+    project.setName(updated.getName());
+    project.setDescription(updated.getDescription());
+
+    List<String> memberIds = updated.getMemberIds() == null
+            ? new java.util.ArrayList<>()
+            : new java.util.ArrayList<>(updated.getMemberIds());
+
+    if (project.getOwnerId() != null && !memberIds.contains(project.getOwnerId())) {
+        memberIds.add(project.getOwnerId());
     }
 
+    project.setMemberIds(memberIds);
+
+    return projectrepository.save(project);
+}
 }

@@ -1,7 +1,7 @@
 package com.example.jira.model;
 
 import java.time.Instant;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -13,11 +13,21 @@ public class User {
     private ObjectId id;
     private String name;
     private String email;
-    private String password;
+    @JsonIgnore
+private String password;
     private String role;
     private String group;
     private String avatar;
+    private Instant lastLoginAt;
     private Instant createdAt = Instant.now();
+
+    public Instant getLastLoginAt() {
+    return lastLoginAt;
+}
+
+public void setLastLoginAt(Instant lastLoginAt) {
+    this.lastLoginAt = lastLoginAt;
+}
 
     public String getId() {
         return id != null ? id.toHexString() : null;

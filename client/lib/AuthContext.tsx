@@ -9,7 +9,8 @@ type User = {
   role: string;
   avatar?: string;
   group?: string;
-  createdAt?: any;
+  createdAt?: string;
+  lastLoginAt?: string;
 };
 export type Project = {
   id: string;
@@ -52,9 +53,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
-  };
+  setUser(null);
+  setSelectedProject(null);
+  localStorage.removeItem("user");
+  localStorage.removeItem("selectedProject");
+};
   const handleslecteproject = (project: Project | null) => {
     setSelectedProject(project);
     if (project) {

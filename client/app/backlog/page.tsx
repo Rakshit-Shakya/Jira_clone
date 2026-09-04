@@ -81,10 +81,19 @@ const page = () => {
         `/api/issues/project/${selectedProject.id}`,
       );
       const sprintRes = await axiosInstance.get(
-        `/api/sprints/project/${selectedProject.id}`,
-      );
-      setIssues(issuesRes.data);
-      setActiveSprint(sprintRes.data || null);
+  `/api/sprints/project/${selectedProject.id}`,
+);
+
+setIssues(issuesRes.data ?? []);
+
+const sprints = sprintRes.data ?? [];
+
+const activeSprint =
+  sprints.find((s: any) => s.status === "ACTIVE") ||
+  sprints.find((s: any) => s.status === "PLANNED") ||
+  null;
+
+setActiveSprint(activeSprint);
     } catch (err) {
       console.error("Failed to load backlog", err);
     } finally {
