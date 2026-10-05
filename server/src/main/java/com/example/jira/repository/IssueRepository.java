@@ -9,4 +9,10 @@ import java.util.List;
 public interface IssueRepository extends MongoRepository<Issue, ObjectId> {
 
     List<Issue> findByProjectId(String projectId);
+
+    List<Issue> findByParentId(String parentId);
+
+    List<Issue> findByDependsOnContaining(String issueId);
+
+    List<Issue> findByDueDateBetweenAndReminderSentFalse(java.time.Instant from, java.time.Instant to);
 }
