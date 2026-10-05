@@ -13,21 +13,32 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/AuthContext";
 import axiosInstance from "@/lib/Axiosinstance";
-import { AlertCircle, Mail, Save } from "lucide-react";
+import { AlertCircle, Mail, Save, Key, UserX } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-const page = () => {
-  const { user, login } = useAuth();
+const ProfilePage = () => {
+  const { user, login, logout } = useAuth();
+  const router = useRouter();
 
   const [name, setName] = useState("");
   const [avatar, setAvatar] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newEmail, setNewEmail] = useState("");
+
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
+  const [pwMessage, setPwMessage] = useState("");
+  const [pwError, setPwError] = useState("");
+
+  const [emailMessage, setEmailMessage] = useState("");
+  const [emailError, setEmailError] = useState("");
+
   useEffect(() => {
     if (!user) return;
-
     setName(user.name || "");
     setAvatar(user.avatar || "");
   }, [user]);
@@ -53,7 +64,7 @@ const page = () => {
         avatar: avatar.trim(),
       });
 
-      login(res.data);
+      login({ ...res.data, token: user.token || localStorage.getItem("token") || undefined });
       setMessage("Profile updated successfully.");
     } catch (err: any) {
       console.error(err);
@@ -67,14 +78,14 @@ const page = () => {
   };
 
   const handleAvatarChange = async () => {
-    const newAvatar = window.prompt(
+    const newAvatarUrl = window.prompt(
       "Enter the URL of your new profile picture:",
       avatar,
     );
 
-    if (newAvatar === null) return;
+    if (newAvatarUrl === null) return;
 
-    setAvatar(newAvatar);
+    setAvatar(newAvatarUrl);
 
     try {
       setIsLoading(true);
@@ -84,10 +95,10 @@ const page = () => {
       const res = await axiosInstance.put(`/api/users/${user.id}`, {
         name,
         group: user.group,
-        avatar: newAvatar.trim(),
+        avatar: newAvatarUrl.trim(),
       });
 
-      login(res.data);
+      login({ ...res.data, token: user.token || localStorage.getItem("token") || undefined });
       setMessage("Profile picture updated successfully.");
     } catch (err: any) {
       console.error(err);
@@ -96,6 +107,81 @@ const page = () => {
           "Failed to update profile picture.",
       );
     } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentPassword || !newPassword) {
+      setPwError("Both current and new passwords are required");
+      return;
+    }
+    if (newPassword.length < 6) {
+      setPwError("New password must be at least 6 characters");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setPwError("");
+      setPwMessage("");
+
+      await axiosInstance.put(`/api/users/${user.id}/password`, {
+        currentPassword,
+        newPassword,
+      });
+
+      setPwMessage("Password changed successfully.");
+      setCurrentPassword("");
+      setNewPassword("");
+    } catch (err: any) {
+      console.error(err);
+      setPwError(err.response?.data?.message || "Failed to change password.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEmailChangeRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newEmail.trim()) {
+      setEmailError("New email is required");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setEmailError("");
+      setEmailMessage("");
+
+      const res = await axiosInstance.put(`/api/users/${user.id}/email`, {
+        email: newEmail.trim(),
+      });
+
+      setEmailMessage(res.data.message || "Verification email sent.");
+      setNewEmail("");
+    } catch (err: any) {
+      console.error(err);
+      setEmailError(err.response?.data?.message || "Failed to request email change.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeactivate = async () => {
+    if (!window.confirm("Are you sure you want to deactivate your account? You will be logged out immediately.")) {
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await axiosInstance.put(`/api/users/${user.id}/deactivate`);
+      logout();
+      router.push("/login");
+    } catch (err: any) {
+      console.error(err);
+      setError(err.response?.data?.message || "Failed to deactivate account.");
       setIsLoading(false);
     }
   };
@@ -111,7 +197,7 @@ const page = () => {
           Profile Settings
         </h1>
         <p className="text-[#5E6C84]">
-          Manage your personal information and preferences
+          Manage your personal information, security, and preferences
         </p>
       </div>
 
@@ -126,7 +212,7 @@ const page = () => {
               <div className="flex flex-col items-center">
                 <Avatar className="h-20 w-20 mb-4">
                   <AvatarImage src={avatar || "/placeholder.svg"} />
-                  <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                  <AvatarFallback>{user.name ? user.name.charAt(0) : "U"}</AvatarFallback>
                 </Avatar>
 
                 <h2 className="text-xl font-semibold text-[#172B4D]">
@@ -155,6 +241,17 @@ const page = () => {
                 disabled={isLoading}
               >
                 Edit Profile Picture
+              </Button>
+
+              <Button
+                type="button"
+                variant="destructive"
+                className="w-full"
+                onClick={handleDeactivate}
+                disabled={isLoading}
+              >
+                <UserX className="h-4 w-4 mr-2" />
+                Deactivate Account
               </Button>
             </div>
           </CardContent>
@@ -253,6 +350,91 @@ const page = () => {
             </CardContent>
           </Card>
 
+          {/* Change Password Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-[#172B4D]">Change Password</CardTitle>
+              <CardDescription>Update your password with current password verification</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handlePasswordChange} className="space-y-4">
+                {pwError && (
+                  <div className="flex gap-3 rounded-md bg-red-50 p-3 text-sm text-red-700">
+                    <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                    <span>{pwError}</span>
+                  </div>
+                )}
+                {pwMessage && (
+                  <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">
+                    {pwMessage}
+                  </div>
+                )}
+                <div>
+                  <label className="text-sm font-semibold text-[#172B4D] mb-1 block">Current Password</label>
+                  <Input
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-semibold text-[#172B4D] mb-1 block">New Password (min 6 chars)</label>
+                  <Input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                    minLength={6}
+                  />
+                </div>
+                <div className="flex justify-end">
+                  <Button type="submit" disabled={isLoading} className="bg-[#0052CC] text-white hover:bg-[#0747A6]">
+                    <Key className="h-4 w-4 mr-2" />
+                    Update Password
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+
+          {/* Request Email Change Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-[#172B4D]">Change Email & Verification</CardTitle>
+              <CardDescription>Request an email update with verification token</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleEmailChangeRequest} className="space-y-4">
+                {emailError && (
+                  <div className="flex gap-3 rounded-md bg-red-50 p-3 text-sm text-red-700">
+                    <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                    <span>{emailError}</span>
+                  </div>
+                )}
+                {emailMessage && (
+                  <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">
+                    {emailMessage}
+                  </div>
+                )}
+                <div>
+                  <label className="text-sm font-semibold text-[#172B4D] mb-1 block">New Email Address</label>
+                  <Input
+                    type="email"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="flex justify-end">
+                  <Button type="submit" disabled={isLoading} className="bg-[#0052CC] text-white hover:bg-[#0747A6]">
+                    Request Email Change
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle className="text-[#172B4D]">Activity</CardTitle>
@@ -294,4 +476,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default ProfilePage;
