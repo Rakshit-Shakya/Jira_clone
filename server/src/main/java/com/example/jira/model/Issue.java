@@ -25,7 +25,21 @@ public class Issue {
     private String assigneeId;
     private int order;
 
-    private List<String> comments = new java.util.ArrayList<>();
+    private List<Comment> comments = new java.util.ArrayList<>();
+
+    // Task 1: subtasks + dependencies.
+    // A subtask's parentId points at its parent Issue's id; a parent task
+    // (parentId == null) can have many subtasks pointing at it. Subtasks
+    // are not themselves allowed to have subtasks (one level deep only).
+    private String parentId;
+
+    // Ids of OTHER issues that must be DONE before this one can start -
+    // i.e. this issue "depends on" / "is blocked by" each of these.
+    private List<String> dependsOn = new java.util.ArrayList<>();
+
+    // Task 5: due-date reminder support.
+    private Instant dueDate;
+    private boolean reminderSent = false;
 
     private Instant createdAt = Instant.now();
     private Instant updatedAt = Instant.now();
@@ -80,8 +94,20 @@ public class Issue {
     public int getOrder() { return order; }
     public void setOrder(int order) { this.order = order; }
 
-    public List<String> getComments() { return comments; }
-    public void setComments(List<String> comments) { this.comments = comments; }
+    public List<Comment> getComments() { return comments; }
+    public void setComments(List<Comment> comments) { this.comments = comments; }
+
+    public String getParentId() { return parentId; }
+    public void setParentId(String parentId) { this.parentId = parentId; }
+
+    public List<String> getDependsOn() { return dependsOn; }
+    public void setDependsOn(List<String> dependsOn) { this.dependsOn = dependsOn; }
+
+    public Instant getDueDate() { return dueDate; }
+    public void setDueDate(Instant dueDate) { this.dueDate = dueDate; }
+
+    public boolean isReminderSent() { return reminderSent; }
+    public void setReminderSent(boolean reminderSent) { this.reminderSent = reminderSent; }
 
     public Instant getCreatedAt() { return createdAt; }
 

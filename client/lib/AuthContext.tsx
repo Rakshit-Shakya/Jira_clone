@@ -7,11 +7,16 @@ type User = {
   name: string;
   email: string;
   role: string;
+  token?: string;
   avatar?: string;
   group?: string;
   createdAt?: string;
   lastLoginAt?: string;
+  active?: boolean;
+  emailVerified?: boolean;
+  emailNotificationsEnabled?: boolean;
 };
+
 export type Project = {
   id: string;
   name: string;
@@ -27,7 +32,7 @@ type AuthContextType = {
   login: (user: User) => void;
   logout: () => void;
   selectedProject: Project | null;
-  setSelectedProject: (Project: Project | null) => void;
+  setSelectedProject: (project: Project | null) => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -35,30 +40,35 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  // Load user from localStorage on first load
+
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
-    const storedproject = localStorage.getItem("selectedProject");
-    if (storedproject) {
-      setSelectedProject(JSON.parse(storedproject));
+    const storedProject = localStorage.getItem("selectedProject");
+    if (storedProject) {
+      setSelectedProject(JSON.parse(storedProject));
     }
   }, []);
 
   const login = (userData: User) => {
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
+    if (userData.token) {
+      localStorage.setItem("token", userData.token);
+    }
   };
 
   const logout = () => {
-  setUser(null);
-  setSelectedProject(null);
-  localStorage.removeItem("user");
-  localStorage.removeItem("selectedProject");
-};
-  const handleslecteproject = (project: Project | null) => {
+    setUser(null);
+    setSelectedProject(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("selectedProject");
+  };
+
+  const handleSelectProject = (project: Project | null) => {
     setSelectedProject(project);
     if (project) {
       localStorage.setItem("selectedProject", JSON.stringify(project));
@@ -66,6 +76,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.removeItem("selectedProject");
     }
   };
+
   return (
     <AuthContext.Provider
       value={{
@@ -74,7 +85,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         login,
         logout,
         selectedProject,
-        setSelectedProject: handleslecteproject,
+        setSelectedProject: handleSelectProject,
       }}
     >
       {children}

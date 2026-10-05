@@ -26,6 +26,27 @@ public class User {
     private Instant createdAt = Instant.now();
     private Instant lastLoginAt;
 
+    // Task 3: account status. Deactivated users are blocked at login but
+    // their historical data (issues reported/assigned, comments, worklogs)
+    // is left untouched for auditing.
+    private boolean active = true;
+
+    // Task 3: email-change verification. A signup's initial email is
+    // considered verified immediately (no verification loop needed to use
+    // the account for the first time); only a later *change* of email goes
+    // through pendingEmail + a token.
+    private boolean emailVerified = true;
+    private String pendingEmail;
+
+    // Never returned to any client - effectively a password-reset-style secret.
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String emailVerificationToken;
+    private Instant emailVerificationExpiry;
+
+    // Task 5: per-user toggle for email notifications, independent of
+    // in-app notifications (which are always recorded).
+    private boolean emailNotificationsEnabled = true;
+
     public String getId() {
         return id != null ? id.toHexString() : null;
     }
@@ -96,5 +117,53 @@ public class User {
 
     public void setLastLoginAt(Instant lastLoginAt) {
         this.lastLoginAt = lastLoginAt;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
+    public String getPendingEmail() {
+        return pendingEmail;
+    }
+
+    public void setPendingEmail(String pendingEmail) {
+        this.pendingEmail = pendingEmail;
+    }
+
+    public String getEmailVerificationToken() {
+        return emailVerificationToken;
+    }
+
+    public void setEmailVerificationToken(String emailVerificationToken) {
+        this.emailVerificationToken = emailVerificationToken;
+    }
+
+    public Instant getEmailVerificationExpiry() {
+        return emailVerificationExpiry;
+    }
+
+    public void setEmailVerificationExpiry(Instant emailVerificationExpiry) {
+        this.emailVerificationExpiry = emailVerificationExpiry;
+    }
+
+    public boolean isEmailNotificationsEnabled() {
+        return emailNotificationsEnabled;
+    }
+
+    public void setEmailNotificationsEnabled(boolean emailNotificationsEnabled) {
+        this.emailNotificationsEnabled = emailNotificationsEnabled;
     }
 }
