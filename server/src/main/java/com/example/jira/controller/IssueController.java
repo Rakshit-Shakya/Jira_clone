@@ -5,12 +5,17 @@ import com.example.jira.model.Issue;
 import com.example.jira.model.Project;
 import com.example.jira.repository.IssueRepository;
 import com.example.jira.repository.Projectrepository;
+import com.example.jira.security.CurrentUser;
 import com.example.jira.service.DependencyValidationService;
+import com.example.jira.service.NotificationService;
 import org.bson.types.ObjectId;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -20,14 +25,20 @@ public class IssueController {
     private final IssueRepository issueRepository;
     private final Projectrepository projectRepository;
     private final DependencyValidationService dependencyValidationService;
+    private final NotificationService notificationService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     public IssueController(
             IssueRepository issueRepository,
             Projectrepository projectRepository,
-            DependencyValidationService dependencyValidationService) {
+            DependencyValidationService dependencyValidationService,
+            NotificationService notificationService,
+            SimpMessagingTemplate messagingTemplate) {
         this.issueRepository = issueRepository;
         this.projectRepository = projectRepository;
         this.dependencyValidationService = dependencyValidationService;
+        this.notificationService = notificationService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     // CREATE
@@ -106,7 +117,22 @@ public class IssueController {
 
         issue.setUpdatedAt(Instant.now());
 
-        return issueRepository.save(issue);
+        Issue saved = issueRepository.save(issue);
+        if (saved.getAssigneeId() != null && !saved.getAssigneeId().isBlank()) {
+            notificationService.notify(
+                    saved.getAssigneeId(),
+                    CurrentUser.getUserId(),
+                    "ASSIGNED",
+                    "You were assigned to issue " + saved.getKey() + ": " + saved.getTitle(),
+                    saved.getId(),
+                    saved.getProjectId()
+            );
+        }
+        try {
+            messagingTemplate.convertAndSend("/topic/project/" + saved.getProjectId(), (Object) Map.of("type", "ISSUE_CREATED", "issueId", saved.getId()));
+        } catch (Exception ignored) {}
+
+        return saved;
     }
 
     // GET BY PROJECT
@@ -147,6 +173,10 @@ public class IssueController {
 
         Issue issue = issueRepository.findById(new ObjectId(id))
                 .orElseThrow(() -> ApiException.notFound("Issue not found"));
+
+        String oldAssignee = issue.getAssigneeId();
+        String oldStatus = issue.getStatus();
+        int oldCommentsSize = issue.getComments() != null ? issue.getComments().size() : 0;
 
         issue.setTitle(updated.getTitle());
         issue.setDescription(updated.getDescription());
@@ -189,7 +219,52 @@ public class IssueController {
 
         issue.setUpdatedAt(Instant.now());
 
-        return issueRepository.save(issue);
+        Issue saved = issueRepository.save(issue);
+
+        if (saved.getAssigneeId() != null && !saved.getAssigneeId().isBlank() && !Objects.equals(oldAssignee, saved.getAssigneeId())) {
+            notificationService.notify(
+                    saved.getAssigneeId(),
+                    CurrentUser.getUserId(),
+                    "ASSIGNED",
+                    "You were assigned to issue " + saved.getKey() + ": " + saved.getTitle(),
+                    saved.getId(),
+                    saved.getProjectId()
+            );
+        }
+
+        if (saved.getStatus() != null && !Objects.equals(oldStatus, saved.getStatus())) {
+            if (saved.getAssigneeId() != null && !saved.getAssigneeId().isBlank()) {
+                notificationService.notify(
+                        saved.getAssigneeId(),
+                        CurrentUser.getUserId(),
+                        "STATUS_CHANGED",
+                        "Issue " + saved.getKey() + " status changed to " + saved.getStatus(),
+                        saved.getId(),
+                        saved.getProjectId()
+                );
+            }
+        }
+
+        int newCommentsSize = saved.getComments() != null ? saved.getComments().size() : 0;
+        if (newCommentsSize > oldCommentsSize) {
+            String targetUser = saved.getAssigneeId();
+            if (targetUser != null && !targetUser.isBlank() && !targetUser.equals(CurrentUser.getUserId())) {
+                notificationService.notify(
+                        targetUser,
+                        CurrentUser.getUserId(),
+                        "COMMENT",
+                        "New comment on issue " + saved.getKey(),
+                        saved.getId(),
+                        saved.getProjectId()
+                );
+            }
+        }
+
+        try {
+            messagingTemplate.convertAndSend("/topic/project/" + saved.getProjectId(), (Object) Map.of("type", "ISSUE_UPDATED", "issueId", saved.getId()));
+        } catch (Exception ignored) {}
+
+        return saved;
     }
 
     // DELETE
@@ -199,7 +274,15 @@ public class IssueController {
             throw ApiException.badRequest("Invalid issue id");
         }
 
-        // Also remove parentId references or handle dependent issues if needed
-        issueRepository.deleteById(new ObjectId(id));
+        Issue issue = issueRepository.findById(new ObjectId(id)).orElse(null);
+        if (issue != null) {
+            String projectId = issue.getProjectId();
+            issueRepository.deleteById(new ObjectId(id));
+            try {
+                messagingTemplate.convertAndSend("/topic/project/" + projectId, (Object) Map.of("type", "ISSUE_DELETED", "issueId", id));
+            } catch (Exception ignored) {}
+        } else {
+            issueRepository.deleteById(new ObjectId(id));
+        }
     }
 }
