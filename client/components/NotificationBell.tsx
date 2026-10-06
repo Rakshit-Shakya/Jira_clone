@@ -10,6 +10,7 @@ export default function NotificationBell() {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [hasNew, setHasNew] = useState(false);
 
   const fetchNotifications = async () => {
     if (!user) return;
@@ -18,8 +19,13 @@ export default function NotificationBell() {
         axiosInstance.get("/api/notifications"),
         axiosInstance.get("/api/notifications/unread-count"),
       ]);
+      const newCount = countRes.data.count || 0;
+      if (newCount > unreadCount) {
+        setHasNew(true);
+        setTimeout(() => setHasNew(false), 3000);
+      }
       setNotifications(notifsRes.data);
-      setUnreadCount(countRes.data.count || 0);
+      setUnreadCount(newCount);
     } catch (err) {
       console.error(err);
     }
@@ -64,44 +70,48 @@ export default function NotificationBell() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 rounded-full hover:bg-gray-200 text-gray-700 transition-colors"
+        className={`relative p-2 rounded-xl transition-all duration-200 hover:bg-secondary text-muted-foreground hover:text-foreground ${
+          hasNew ? "animate-bounce text-primary" : ""
+        }`}
         title="Notifications"
       >
-        <Bell className="h-5 w-5" />
+        <Bell className="h-4 w-4" />
         {unreadCount > 0 && (
-          <span className="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+          <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-sm">
             {unreadCount}
           </span>
         )}
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 mt-2 w-80 bg-white border border-[#DFE1E6] rounded shadow-xl z-50 p-3">
-          <div className="flex items-center justify-between pb-2 mb-2 border-b">
-            <span className="font-semibold text-sm text-[#172B4D]">Notifications</span>
+        <div className="absolute left-0 mt-2 w-80 bg-popover border border-border rounded-2xl shadow-xl z-50 p-4 animate-in fade-in-50 zoom-in-95 duration-150">
+          <div className="flex items-center justify-between pb-2 mb-3 border-b border-border/60">
+            <span className="font-semibold text-xs uppercase tracking-wider text-card-foreground">Notifications</span>
             {unreadCount > 0 && (
               <button
                 onClick={markAllRead}
-                className="text-xs text-[#0052CC] hover:underline"
+                className="text-xs text-primary font-medium hover:underline"
               >
                 Mark all read
               </button>
             )}
           </div>
-          <div className="max-h-72 overflow-y-auto space-y-2">
+          <div className="max-h-72 overflow-y-auto space-y-2 pr-1">
             {notifications.length === 0 ? (
-              <p className="text-xs text-gray-500 text-center py-4">No notifications yet</p>
+              <p className="text-xs text-muted-foreground text-center py-6">No notifications yet</p>
             ) : (
               notifications.map((n: any) => (
                 <div
                   key={n.id}
                   onClick={() => !n.read && markAsRead(n.id)}
-                  className={`p-2 rounded text-xs cursor-pointer transition-colors ${
-                    n.read ? "bg-white text-gray-600" : "bg-blue-50 text-[#172B4D] font-medium"
+                  className={`p-2.5 rounded-xl text-xs cursor-pointer transition-all ${
+                    n.read
+                      ? "bg-secondary/40 text-muted-foreground hover:bg-secondary"
+                      : "bg-primary/10 text-card-foreground font-medium border border-primary/20"
                   }`}
                 >
-                  <p>{n.message}</p>
-                  <span className="text-[10px] text-gray-400 mt-1 block">
+                  <p className="leading-snug">{n.message}</p>
+                  <span className="text-[10px] text-muted-foreground mt-1.5 block">
                     {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
