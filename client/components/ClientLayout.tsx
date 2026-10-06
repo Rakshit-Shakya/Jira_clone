@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/AuthContext";
 import Sidebar from "./Sidebar";
+import RealtimeListener from "./RealtimeListener";
 
 const ClientLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
@@ -36,6 +37,7 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
     children
   ) : (
     <div className="flex min-h-screen bg-white">
+      <RealtimeListener />
       <Sidebar />
       <main className="flex-1 overflow-x-hidden">{children}</main>
     </div>
