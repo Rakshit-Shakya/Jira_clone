@@ -15,9 +15,9 @@ interface KanbanCardProps {
 }
 
 const priorityColors: Record<string, string> = {
-  HIGH: "bg-red-100 text-red-800",
-  MEDIUM: "bg-yellow-100 text-yellow-800",
-  LOW: "bg-green-100 text-green-800",
+  HIGH: "bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20",
+  MEDIUM: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20",
+  LOW: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20",
 };
 
 const issueTypeColors: Record<string, string> = {
@@ -72,43 +72,43 @@ const KanbanCard = ({ issue, isOverlay = false, onClick }: KanbanCardProps) => {
         e.stopPropagation(); // prevents drag-click conflict
         onClick?.();
       }}
-      className={`rounded border bg-white p-3 shadow-sm transition-colors ${
+      className={`rounded-xl border border-border/60 bg-card p-3.5 shadow-xs transition-all ${
         isOverlay
-          ? "shadow-lg border-[#0052CC]"
-          : "hover:bg-[#F4F5F7] cursor-pointer"
+          ? "shadow-xl border-primary ring-2 ring-primary/20"
+          : "hover:border-primary/50 hover:shadow-md cursor-pointer"
       }`}
     >
       {/* Title */}
-      <p className="text-sm font-medium text-[#172B4D] mb-3 leading-tight">
+      <p className="text-sm font-semibold text-card-foreground mb-3 leading-snug">
         {issue.title}
       </p>
 
       {/* Meta */}
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-2.5">
         <div className="flex items-center gap-2">
           <div
-            className={`h-4 w-4 rounded ${issueTypeColors[issue.type]}`}
+            className={`h-3.5 w-3.5 rounded-md ${issueTypeColors[issue.type]}`}
           />
-          <span className="text-[11px] font-bold text-[#5E6C84]">
+          <span className="text-[11px] font-bold text-muted-foreground tracking-wide">
             {issue.key}
           </span>
         </div>
 
-        <Badge className={`text-xs ${priorityColors[issue.priority]}`}>
+        <Badge className={`text-[10px] px-2 py-0.5 font-semibold ${priorityColors[issue.priority]}`}>
           {issue.priority}
         </Badge>
       </div>
 
       {/* Assignee */}
       {assignee && (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 pt-1 border-t border-border/40 mt-2">
           <Avatar className="h-5 w-5">
             <AvatarImage src={assignee.avatar} />
-            <AvatarFallback>
+            <AvatarFallback className="text-[10px] bg-primary/10 text-primary font-bold">
               {assignee.name?.[0]}
             </AvatarFallback>
           </Avatar>
-          <span className="text-[10px] text-[#626F86]">
+          <span className="text-[11px] font-medium text-muted-foreground truncate">
             {assignee.name}
           </span>
         </div>
