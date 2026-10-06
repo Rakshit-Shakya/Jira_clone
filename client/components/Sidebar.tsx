@@ -21,6 +21,7 @@ import CreateIssuemodel from "./CreateIssuemodel";
 import { useAuth } from "@/lib/AuthContext";
 import axiosInstance from "@/lib/Axiosinstance";
 import NotificationBell from "./NotificationBell";
+import { ThemeToggle } from "./ThemeToggle";
 
 const Sidebar = () => {
   const router = useRouter();
@@ -83,7 +84,10 @@ const Sidebar = () => {
             </span>
           </div>
         </div>
-        <NotificationBell />
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <NotificationBell />
+        </div>
       </div>
 
       {/* Project Selector */}

@@ -12,11 +12,16 @@ const KanbanColumn = ({ column, issues, onIssueClick }: any) => {
     id: column.id,
   });
   return (
-    <div className="w-[280px] flex-shrink-0 rounded-lg bg-[#F4F5F7] p-2 flex flex-col h-full">
-      <h3 className="mb-3 px-2 text-xs font-semibold uppercase text-[#5E6C84]">
-        {column.title} ({issues.length})
-      </h3>
-      <div ref={setNodeRef} className="flex-1 space-y-2">
+    <div className="w-[300px] flex-shrink-0 rounded-2xl bg-secondary/30 border border-border/50 p-3.5 flex flex-col h-full shadow-2xs">
+      <div className="flex items-center justify-between mb-3 px-2">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          {column.title}
+        </h3>
+        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground">
+          {issues.length}
+        </span>
+      </div>
+      <div ref={setNodeRef} className="flex-1 space-y-2.5 overflow-y-auto pr-1">
         <SortableContext
           items={issues.map((i: any) => i.id)}
           strategy={verticalListSortingStrategy}

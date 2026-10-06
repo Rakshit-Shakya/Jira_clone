@@ -28,7 +28,7 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
   }, [isAuthenticated, pathname, router]);
 
   if (!isReady) {
-    return <div className="h-screen w-screen bg-white" />;
+    return <div className="h-screen w-screen bg-background" />;
   }
 
   const isAuthPage = pathname === "/login" || pathname === "/setup-project";
@@ -36,7 +36,7 @@ const ClientLayout = ({ children }: { children: React.ReactNode }) => {
   return isAuthPage ? (
     children
   ) : (
-    <div className="flex min-h-screen bg-white">
+    <div className="flex min-h-screen bg-background text-foreground">
       <RealtimeListener />
       <Sidebar />
       <main className="flex-1 overflow-x-hidden">{children}</main>
