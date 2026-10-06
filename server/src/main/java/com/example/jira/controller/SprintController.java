@@ -3,11 +3,15 @@ import com.example.jira.model.Issue;
 import com.example.jira.model.Sprint;
 import com.example.jira.repository.IssueRepository;
 import com.example.jira.repository.SprintRepository;
+import com.example.jira.security.CurrentUser;
+import com.example.jira.service.NotificationService;
 import org.bson.types.ObjectId;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -16,12 +20,18 @@ public class SprintController {
 
     private final SprintRepository sprintRepository;
     private final IssueRepository issueRepository;
+    private final NotificationService notificationService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     public SprintController(
             SprintRepository sprintRepository,
-            IssueRepository issueRepository) {
+            IssueRepository issueRepository,
+            NotificationService notificationService,
+            SimpMessagingTemplate messagingTemplate) {
         this.sprintRepository = sprintRepository;
         this.issueRepository = issueRepository;
+        this.notificationService = notificationService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     // =========================
@@ -60,8 +70,13 @@ public Sprint createSprint(@RequestBody Sprint sprint) {
 
         sprint.setStatus("ACTIVE");
         sprint.setStartDate(Instant.now());
+        Sprint saved = sprintRepository.save(sprint);
 
-        return sprintRepository.save(sprint);
+        try {
+            messagingTemplate.convertAndSend("/topic/project/" + saved.getProjectId(), (Object) Map.of("type", "SPRINT_STARTED", "sprintId", saved.getId()));
+        } catch (Exception ignored) {}
+
+        return saved;
     }
 
     // =========================
@@ -75,8 +90,13 @@ public Sprint createSprint(@RequestBody Sprint sprint) {
 
         sprint.setStatus("COMPLETED");
         sprint.setEndDate(Instant.now());
+        Sprint saved = sprintRepository.save(sprint);
 
-        return sprintRepository.save(sprint);
+        try {
+            messagingTemplate.convertAndSend("/topic/project/" + saved.getProjectId(), (Object) Map.of("type", "SPRINT_COMPLETED", "sprintId", saved.getId()));
+        } catch (Exception ignored) {}
+
+        return saved;
     }
 
     // =========================
