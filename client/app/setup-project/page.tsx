@@ -95,38 +95,38 @@ router.push("/");
     router.push("/login");
   }
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#F4F5F7] p-4">
+    <div className="flex min-h-screen items-center justify-center bg-background p-4 text-foreground">
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center gap-4 text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded bg-[#0052CC] text-white">
-            <FolderKanban className="h-8 w-8" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-md shadow-primary/25">
+            <FolderKanban className="h-7 w-7" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-[#172B4D]">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
               Create your first project
             </h1>
-            <p className="text-sm text-[#6B778C] mt-2">Welcome, {user?.name}!</p>
+            <p className="text-sm text-muted-foreground mt-2">Welcome, {user?.name}!</p>
           </div>
         </div>
 
-        <Card className="border-none shadow-xl">
+        <Card className="border border-border shadow-xl bg-card">
           <CardHeader>
-            <CardTitle className="text-lg">Set up your project</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-lg text-card-foreground">Set up your project</CardTitle>
+            <CardDescription className="text-muted-foreground">
               Give your project a name and key to get started
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <div className="flex gap-3 rounded-md bg-red-50 p-3 text-sm text-red-700">
+                <div className="flex gap-3 rounded-md bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20">
                   <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
                   <span>{error}</span>
                 </div>
               )}
 
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase text-[#6B778C]">
+                <label className="text-xs font-bold uppercase text-muted-foreground tracking-wider">
                   Project name
                 </label>
                 <Input
@@ -134,17 +134,17 @@ router.push("/");
                   name="name"
                   placeholder="e.g., Platform Services"
                   required
-                  className="h-10 border-[#DFE1E6] focus-visible:ring-[#0052CC]"
+                  className="h-10 border-border bg-background text-foreground focus-visible:ring-primary"
                   value={formData.name}
                   onChange={handleChange}
                 />
-                <p className="text-xs text-[#6B778C]">
+                <p className="text-xs text-muted-foreground">
                   This is the display name for your project
                 </p>
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase text-[#6B778C]">
+                <label className="text-xs font-bold uppercase text-muted-foreground tracking-wider">
                   Project key
                 </label>
                 <Input
@@ -153,11 +153,11 @@ router.push("/");
                   placeholder="e.g., PS"
                   maxLength={5}
                   required
-                  className="h-10 border-[#DFE1E6] focus-visible:ring-[#0052CC]"
+                  className="h-10 border-border bg-background text-foreground focus-visible:ring-primary"
                   value={formData.key}
                   onChange={handleChange}
                 />
-                <p className="text-xs text-[#6B778C]">
+                <p className="text-xs text-muted-foreground">
                   Used for issue keys (e.g., {formData.key || "PS"}-1). Letters
                   only, max 5 characters.
                 </p>
@@ -167,7 +167,7 @@ router.push("/");
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-[#0052CC] text-white hover:bg-[#0747A6]"
+                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20"
                 >
                   {isLoading ? "Creating project..." : "Create project"}
                   {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
@@ -187,8 +187,8 @@ router.push("/");
           </CardContent>
         </Card>
 
-        <div className="rounded-md bg-blue-50 p-4 border border-blue-200">
-          <p className="text-sm text-blue-700">
+        <div className="rounded-md bg-primary/10 p-4 border border-primary/20">
+          <p className="text-sm text-primary">
             You can create additional projects anytime from the Projects page
             after you get started.
           </p>

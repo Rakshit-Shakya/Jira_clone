@@ -191,52 +191,52 @@ const ProfilePage = () => {
     : "Not available";
 
   return (
-    <div className="flex h-full flex-col p-6 overflow-auto bg-[#F4F5F7]">
+    <div className="flex h-full flex-col p-6 overflow-auto bg-background text-foreground">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#172B4D] mb-2">
+        <h1 className="text-3xl font-bold text-foreground mb-2 tracking-tight">
           Profile Settings
         </h1>
-        <p className="text-[#5E6C84]">
+        <p className="text-muted-foreground text-sm">
           Manage your personal information, security, and preferences
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-1">
+        <Card className="lg:col-span-1 bg-card border-border">
           <CardHeader>
-            <CardTitle className="text-[#172B4D]">About You</CardTitle>
+            <CardTitle className="text-card-foreground">About You</CardTitle>
           </CardHeader>
 
           <CardContent>
             <div className="space-y-4">
               <div className="flex flex-col items-center">
-                <Avatar className="h-20 w-20 mb-4">
+                <Avatar className="h-20 w-20 mb-4 ring-2 ring-primary/20">
                   <AvatarImage src={avatar || "/placeholder.svg"} />
-                  <AvatarFallback>{user.name ? user.name.charAt(0) : "U"}</AvatarFallback>
+                  <AvatarFallback className="bg-primary/10 text-primary text-xl font-bold">{user.name ? user.name.charAt(0) : "U"}</AvatarFallback>
                 </Avatar>
 
-                <h2 className="text-xl font-semibold text-[#172B4D]">
+                <h2 className="text-xl font-semibold text-card-foreground">
                   {user.name}
                 </h2>
 
                 <Badge className="mt-2">{user.role}</Badge>
               </div>
 
-              <div className="space-y-3 pt-4 border-t">
+              <div className="space-y-3 pt-4 border-t border-border">
                 <div className="flex items-center gap-3 text-sm">
-                  <Mail className="h-4 w-4 text-[#5E6C84]" />
-                  <span className="text-[#172B4D]">{user.email}</span>
+                  <Mail className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-foreground">{user.email}</span>
                 </div>
 
                 <div className="flex items-center gap-3 text-sm">
-                  <span className="text-[#5E6C84]">Group:</span>
+                  <span className="text-muted-foreground">Group:</span>
                   <Badge variant="outline">{user.group || "Not set"}</Badge>
                 </div>
               </div>
 
               <Button
                 type="button"
-                className="w-full bg-[#0052CC] text-white hover:bg-[#0747A6]"
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20"
                 onClick={handleAvatarChange}
                 disabled={isLoading}
               >
@@ -258,13 +258,13 @@ const ProfilePage = () => {
         </Card>
 
         <div className="lg:col-span-2 space-y-6">
-          <Card>
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-[#172B4D]">
+              <CardTitle className="text-card-foreground">
                 Personal Information
               </CardTitle>
 
-              <CardDescription>
+              <CardDescription className="text-muted-foreground">
                 Update your contact details
               </CardDescription>
             </CardHeader>
@@ -272,32 +272,32 @@ const ProfilePage = () => {
             <CardContent>
               <div className="space-y-4">
                 {error && (
-                  <div className="flex gap-3 rounded-md bg-red-50 p-3 text-sm text-red-700">
+                  <div className="flex gap-3 rounded-md bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20">
                     <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
                     <span>{error}</span>
                   </div>
                 )}
 
                 {message && (
-                  <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">
+                  <div className="rounded-md bg-emerald-500/10 p-3 text-sm text-emerald-600 border border-emerald-500/20">
                     {message}
                   </div>
                 )}
 
                 <div>
-                  <label className="text-sm font-semibold text-[#172B4D] mb-1 block">
+                  <label className="text-sm font-semibold text-foreground mb-1 block">
                     Full Name
                   </label>
 
                   <Input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="focus-visible:ring-[#0052CC]"
+                    className="bg-background text-foreground border-border"
                   />
                 </div>
 
                 <div>
-                  <label className="text-sm font-semibold text-[#172B4D] mb-1 block">
+                  <label className="text-sm font-semibold text-foreground mb-1 block">
                     Email
                   </label>
 
@@ -305,32 +305,32 @@ const ProfilePage = () => {
                     type="email"
                     value={user.email}
                     disabled
-                    className="focus-visible:ring-[#0052CC]"
+                    className="bg-background text-foreground border-border opacity-70"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-semibold text-[#172B4D] mb-1 block">
+                    <label className="text-sm font-semibold text-foreground mb-1 block">
                       Role
                     </label>
 
                     <Input
                       disabled
                       value={user.role}
-                      className="focus-visible:ring-[#0052CC]"
+                      className="bg-background text-foreground border-border opacity-70"
                     />
                   </div>
 
                   <div>
-                    <label className="text-sm font-semibold text-[#172B4D] mb-1 block">
+                    <label className="text-sm font-semibold text-foreground mb-1 block">
                       Team
                     </label>
 
                     <Input
                       disabled
                       value={user.group || ""}
-                      className="focus-visible:ring-[#0052CC]"
+                      className="bg-background text-foreground border-border opacity-70"
                     />
                   </div>
                 </div>
@@ -339,7 +339,7 @@ const ProfilePage = () => {
                   <Button
                     onClick={handleSave}
                     disabled={isLoading}
-                    className="bg-[#0052CC] text-white hover:bg-[#0747A6]"
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20"
                   >
                     <Save className="h-4 w-4 mr-2" />
 
@@ -351,45 +351,47 @@ const ProfilePage = () => {
           </Card>
 
           {/* Change Password Card */}
-          <Card>
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-[#172B4D]">Change Password</CardTitle>
-              <CardDescription>Update your password with current password verification</CardDescription>
+              <CardTitle className="text-card-foreground">Change Password</CardTitle>
+              <CardDescription className="text-muted-foreground">Update your password with current password verification</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handlePasswordChange} className="space-y-4">
                 {pwError && (
-                  <div className="flex gap-3 rounded-md bg-red-50 p-3 text-sm text-red-700">
+                  <div className="flex gap-3 rounded-md bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20">
                     <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
                     <span>{pwError}</span>
                   </div>
                 )}
                 {pwMessage && (
-                  <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">
+                  <div className="rounded-md bg-emerald-500/10 p-3 text-sm text-emerald-600 border border-emerald-500/20">
                     {pwMessage}
                   </div>
                 )}
                 <div>
-                  <label className="text-sm font-semibold text-[#172B4D] mb-1 block">Current Password</label>
+                  <label className="text-sm font-semibold text-foreground mb-1 block">Current Password</label>
                   <Input
                     type="password"
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
                     required
+                    className="bg-background text-foreground border-border"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-semibold text-[#172B4D] mb-1 block">New Password (min 6 chars)</label>
+                  <label className="text-sm font-semibold text-foreground mb-1 block">New Password (min 6 chars)</label>
                   <Input
                     type="password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     required
                     minLength={6}
+                    className="bg-background text-foreground border-border"
                   />
                 </div>
                 <div className="flex justify-end">
-                  <Button type="submit" disabled={isLoading} className="bg-[#0052CC] text-white hover:bg-[#0747A6]">
+                  <Button type="submit" disabled={isLoading} className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20">
                     <Key className="h-4 w-4 mr-2" />
                     Update Password
                   </Button>
@@ -399,35 +401,36 @@ const ProfilePage = () => {
           </Card>
 
           {/* Request Email Change Card */}
-          <Card>
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-[#172B4D]">Change Email & Verification</CardTitle>
-              <CardDescription>Request an email update with verification token</CardDescription>
+              <CardTitle className="text-card-foreground">Change Email & Verification</CardTitle>
+              <CardDescription className="text-muted-foreground">Request an email update with verification token</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleEmailChangeRequest} className="space-y-4">
                 {emailError && (
-                  <div className="flex gap-3 rounded-md bg-red-50 p-3 text-sm text-red-700">
+                  <div className="flex gap-3 rounded-md bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20">
                     <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
                     <span>{emailError}</span>
                   </div>
                 )}
                 {emailMessage && (
-                  <div className="rounded-md bg-green-50 p-3 text-sm text-green-700">
+                  <div className="rounded-md bg-emerald-500/10 p-3 text-sm text-emerald-600 border border-emerald-500/20">
                     {emailMessage}
                   </div>
                 )}
                 <div>
-                  <label className="text-sm font-semibold text-[#172B4D] mb-1 block">New Email Address</label>
+                  <label className="text-sm font-semibold text-foreground mb-1 block">New Email Address</label>
                   <Input
                     type="email"
                     value={newEmail}
                     onChange={(e) => setNewEmail(e.target.value)}
                     required
+                    className="bg-background text-foreground border-border"
                   />
                 </div>
                 <div className="flex justify-end">
-                  <Button type="submit" disabled={isLoading} className="bg-[#0052CC] text-white hover:bg-[#0747A6]">
+                  <Button type="submit" disabled={isLoading} className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20">
                     Request Email Change
                   </Button>
                 </div>
@@ -435,11 +438,11 @@ const ProfilePage = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-[#172B4D]">Activity</CardTitle>
+              <CardTitle className="text-card-foreground">Activity</CardTitle>
 
-              <CardDescription>
+              <CardDescription className="text-muted-foreground">
                 Your account activity information
               </CardDescription>
             </CardHeader>
@@ -447,23 +450,23 @@ const ProfilePage = () => {
             <CardContent>
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-[#5E6C84]">
+                  <span className="text-muted-foreground">
                     Account Created
                   </span>
 
-                  <span className="text-[#172B4D] font-semibold">
+                  <span className="text-foreground font-semibold">
                     {user.createdAt
                       ? new Date(user.createdAt).toLocaleDateString()
                       : "Not available"}
                   </span>
                 </div>
 
-                <div className="flex justify-between text-sm border-t pt-3">
-                  <span className="text-[#5E6C84]">
+                <div className="flex justify-between text-sm border-t border-border pt-3">
+                  <span className="text-muted-foreground">
                     Last Login
                   </span>
 
-                  <span className="text-[#172B4D] font-semibold">
+                  <span className="text-foreground font-semibold">
                     {lastLogin}
                   </span>
                 </div>

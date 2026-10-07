@@ -131,24 +131,24 @@ const page = () => {
     ? teamMembers.filter((member: any) => member.group === selectedGroup)
     : teamMembers;
   return (
-    <div className="p-8 h-full flex flex-col bg-[#F4F5F7] relative">
+    <div className="p-8 h-full flex flex-col bg-background text-foreground relative">
       {/* Loader */}
       {loading && (
-        <div className="absolute inset-0 bg-white/70 flex items-center justify-center z-50">
-          <p className="text-sm text-[#6B778C]">Updating team…</p>
+        <div className="absolute inset-0 bg-background/70 flex items-center justify-center z-50">
+          <p className="text-sm text-muted-foreground">Updating team…</p>
         </div>
       )}
 
       {/* Header */}
       <header className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-[#172B4D]">Team Management</h1>
-          <p className="text-[#5E6C84] text-sm mt-1">
+          <h1 className="text-3xl font-bold text-foreground tracking-tight">Team Management</h1>
+          <p className="text-muted-foreground text-sm mt-1">
             {teamMembers.length} team members
           </p>
         </div>
         <Button
-          className="bg-[#0052CC] text-white hover:bg-[#0747A6]"
+          className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20"
           onClick={handleAddmember}
         >
           <UserPlus className="mr-2 h-4 w-4" />
@@ -161,7 +161,7 @@ const page = () => {
         <Button
           variant={selectedGroup === null ? "default" : "outline"}
           onClick={() => setSelectedGroup(null)}
-          className={selectedGroup === null ? "bg-[#0052CC] text-white" : ""}
+          className={selectedGroup === null ? "bg-primary text-primary-foreground shadow-md shadow-primary/20" : ""}
         >
           All Members
         </Button>
@@ -170,7 +170,7 @@ const page = () => {
             key={group}
             variant={selectedGroup === group ? "default" : "outline"}
             onClick={() => setSelectedGroup(group)}
-            className={selectedGroup === group ? "bg-[#0052CC] text-white" : ""}
+            className={selectedGroup === group ? "bg-primary text-primary-foreground shadow-md shadow-primary/20" : ""}
           >
             {group}
           </Button>
@@ -178,9 +178,9 @@ const page = () => {
       </div>
 
       {/* Table */}
-      <div className="flex-1 rounded-lg border bg-white overflow-y-auto">
+      <div className="flex-1 rounded-lg border border-border bg-card overflow-y-auto">
         <Table>
-          <TableHeader className="bg-[#F4F5F7] sticky top-0">
+          <TableHeader className="bg-secondary/50 sticky top-0">
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
@@ -193,19 +193,19 @@ const page = () => {
           <TableBody>
             {filteredMembers.length > 0 ? (
               filteredMembers.map((member: any) => (
-                <TableRow key={member.id}>
+                <TableRow key={member.id} className="border-border">
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={member.avatar} />
                         <AvatarFallback>{member.name[0]}</AvatarFallback>
                       </Avatar>
-                      <span className="font-semibold">{member.name}</span>
+                      <span className="font-semibold text-foreground">{member.name}</span>
                     </div>
                   </TableCell>
 
                   <TableCell>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 text-muted-foreground">
                       <Mail className="h-4 w-4" />
                       {member.email}
                     </div>
@@ -215,8 +215,8 @@ const page = () => {
                     <Badge
                       className={
                         member.role === "ADMIN"
-                          ? "bg-red-100 text-red-800"
-                          : "bg-blue-100 text-blue-800"
+                          ? "bg-red-500/10 text-red-600 border border-red-500/20"
+                          : "bg-blue-500/10 text-blue-600 border border-blue-500/20"
                       }
                     >
                       {member.role}
@@ -224,7 +224,7 @@ const page = () => {
                   </TableCell>
 
                   <TableCell>
-                    <Badge variant="outline" className="bg-[#EBECF0]">
+                    <Badge variant="outline" className="bg-secondary text-secondary-foreground">
                       {member.group}
                     </Badge>
                   </TableCell>
@@ -233,7 +233,7 @@ const page = () => {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="text-red-500"
+                      className="text-destructive hover:bg-destructive/10"
                       onClick={() => handleDeleteMember(member.id, member.name)}
                     >
                       <Trash2 className="h-4 w-4" />
@@ -243,7 +243,7 @@ const page = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-8">
+                <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
                   No members found
                 </TableCell>
               </TableRow>

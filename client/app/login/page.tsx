@@ -105,25 +105,25 @@ const page = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#F4F5F7] p-4">
+    <div className="flex min-h-screen items-center justify-center bg-background p-4 text-foreground">
       <div className="w-full max-w-md space-y-8">
         <div className="flex flex-col items-center gap-4 text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded bg-[#0052CC] text-white">
-            <FolderKanban className="h-8 w-8" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-md shadow-primary/25">
+            <FolderKanban className="h-7 w-7" />
           </div>
 
-          <h1 className="text-2xl font-bold tracking-tight text-[#172B4D]">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
             {isSignUp ? "Create your account" : "Log in to your account"}
           </h1>
         </div>
 
-        <Card className="border-none shadow-xl">
+        <Card className="border border-border shadow-xl bg-card">
           <CardHeader>
-            <CardTitle className="text-lg">
+            <CardTitle className="text-lg text-card-foreground">
               {isSignUp ? "Get started" : "Welcome back"}
             </CardTitle>
 
-            <CardDescription>
+            <CardDescription className="text-muted-foreground">
               {isSignUp
                 ? "Create an account to start managing your projects"
                 : "Enter your credentials to access your Jira projects"}
@@ -133,7 +133,7 @@ const page = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <div className="flex gap-3 rounded-md bg-red-50 p-3 text-sm text-red-700">
+                <div className="flex gap-3 rounded-md bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20">
                   <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
                   <span>{error}</span>
                 </div>
@@ -141,7 +141,7 @@ const page = () => {
 
               {isSignUp && (
                 <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase text-[#6B778C]">
+                  <label className="text-xs font-bold uppercase text-muted-foreground tracking-wider">
                     Full name
                   </label>
 
@@ -150,7 +150,7 @@ const page = () => {
                     name="name"
                     placeholder="John Doe"
                     required={isSignUp}
-                    className="h-10 border-[#DFE1E6] focus-visible:ring-[#0052CC]"
+                    className="h-10 border-border bg-background text-foreground focus-visible:ring-primary"
                     value={formData.name}
                     onChange={handleChange}
                   />
@@ -158,7 +158,7 @@ const page = () => {
               )}
 
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase text-[#6B778C]">
+                <label className="text-xs font-bold uppercase text-muted-foreground tracking-wider">
                   Email address
                 </label>
 
@@ -167,14 +167,14 @@ const page = () => {
                   name="email"
                   placeholder="name@company.com"
                   required
-                  className="h-10 border-[#DFE1E6] focus-visible:ring-[#0052CC]"
+                  className="h-10 border-border bg-background text-foreground focus-visible:ring-primary"
                   value={formData.email}
                   onChange={handleChange}
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase text-[#6B778C]">
+                <label className="text-xs font-bold uppercase text-muted-foreground tracking-wider">
                   Password
                 </label>
 
@@ -186,13 +186,13 @@ const page = () => {
                   }
                   required
                   minLength={isSignUp ? 6 : undefined}
-                  className="h-10 border-[#DFE1E6] focus-visible:ring-[#0052CC]"
+                  className="h-10 border-border bg-background text-foreground focus-visible:ring-primary"
                   value={formData.password}
                   onChange={handleChange}
                 />
 
                 {isSignUp && (
-                  <p className="text-xs text-[#6B778C]">
+                  <p className="text-xs text-muted-foreground">
                     Password must be at least 6 characters
                   </p>
                 )}
@@ -201,7 +201,7 @@ const page = () => {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-[#0052CC] text-white hover:bg-[#0747A6]"
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20"
               >
                 {isLoading
                   ? "Processing..."
@@ -215,7 +215,7 @@ const page = () => {
               </Button>
             </form>
 
-            <div className="mt-6 text-center text-sm text-[#6B778C]">
+            <div className="mt-6 text-center text-sm text-muted-foreground">
               {isSignUp
                 ? "Already have an account? "
                 : "Don't have an account? "}
@@ -231,7 +231,7 @@ const page = () => {
                     password: "",
                   });
                 }}
-                className="text-[#0052CC] hover:underline font-semibold"
+                className="text-primary hover:underline font-semibold"
               >
                 {isSignUp ? "Log in" : "Sign up"}
               </button>
@@ -239,7 +239,7 @@ const page = () => {
           </CardContent>
         </Card>
 
-        <div className="flex justify-center gap-6 text-xs text-[#6B778C]">
+        <div className="flex justify-center gap-6 text-xs text-muted-foreground">
           <span>Privacy Policy</span>
           <span>User Agreement</span>
         </div>
