@@ -72,10 +72,10 @@ const KanbanCard = ({ issue, isOverlay = false, onClick }: KanbanCardProps) => {
         e.stopPropagation(); // prevents drag-click conflict
         onClick?.();
       }}
-      className={`rounded-xl border border-border/60 bg-card p-3.5 shadow-xs transition-all ${
+      className={`rounded-lg border border-border bg-card p-3 shadow-xs transition-all ${
         isOverlay
-          ? "shadow-xl border-primary ring-2 ring-primary/20"
-          : "hover:border-primary/50 hover:shadow-md cursor-pointer"
+          ? "shadow-2xl border-primary ring-2 ring-primary/20 bg-card"
+          : "hover:border-primary/50 hover:shadow-sm cursor-pointer"
       }`}
     >
       {/* Title */}
@@ -84,24 +84,24 @@ const KanbanCard = ({ issue, isOverlay = false, onClick }: KanbanCardProps) => {
       </p>
 
       {/* Meta */}
-      <div className="flex items-center justify-between mb-2.5">
+      <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <div
-            className={`h-3.5 w-3.5 rounded-md ${issueTypeColors[issue.type]}`}
+            className={`h-3.5 w-3.5 rounded-sm ${issueTypeColors[issue.type] || "bg-primary"}`}
           />
           <span className="text-[11px] font-bold text-muted-foreground tracking-wide">
             {issue.key}
           </span>
         </div>
 
-        <Badge className={`text-[10px] px-2 py-0.5 font-semibold ${priorityColors[issue.priority]}`}>
+        <Badge className={`text-[10px] px-2 py-0.5 font-semibold ${priorityColors[issue.priority] || "bg-secondary text-secondary-foreground"}`}>
           {issue.priority}
         </Badge>
       </div>
 
       {/* Assignee */}
       {assignee && (
-        <div className="flex items-center gap-2 pt-1 border-t border-border/40 mt-2">
+        <div className="flex items-center gap-2 pt-2 border-t border-border mt-2">
           <Avatar className="h-5 w-5">
             <AvatarImage src={assignee.avatar} />
             <AvatarFallback className="text-[10px] bg-primary/10 text-primary font-bold">

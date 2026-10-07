@@ -120,14 +120,14 @@ const page = () => {
     router.push("/create-project"); 
   }; 
   return ( 
-    <div className="flex h-full flex-col p-6 overflow-auto"> 
+    <div className="flex h-full flex-col p-6 overflow-auto bg-background text-foreground"> 
       <div className="mb-6"> 
-        <h1 className="text-3xl font-bold text-[#172B4D] mb-2">Projects</h1> 
-        <p className="text-[#5E6C84]">Manage and view all your projects</p> 
+        <h1 className="text-3xl font-bold text-foreground mb-2 tracking-tight">Projects</h1> 
+        <p className="text-muted-foreground">Manage and view all your projects</p> 
       </div> 
  
       <Button 
-        className="mb-6 bg-[#0052CC] text-white hover:bg-[#0747A6] w-fit" 
+        className="mb-6 bg-primary text-primary-foreground hover:bg-primary/90 w-fit shadow-md shadow-primary/20" 
         onClick={redirectproject} 
       > 
         <Plus className="h-4 w-4 mr-2" /> 
@@ -140,53 +140,39 @@ const page = () => {
           return ( 
             <Card 
               key={project.id} 
-              className="hover:shadow-lg transition-shadow cursor-pointer" 
+              className="hover:shadow-md transition-shadow cursor-pointer bg-card border-border" 
             > 
               <CardHeader> 
                 <div className="flex items-start justify-between"> 
                   <div> 
-                    <CardTitle className="text-[#172B4D]"> 
+                    <CardTitle className="text-card-foreground"> 
                       {project.name} 
                     </CardTitle> 
-                    <CardDescription>Key: {project.key}</CardDescription> 
+                    <CardDescription className="text-muted-foreground">Key: {project.key}</CardDescription> 
                   </div> 
                   <Badge variant="outline">{project.key}</Badge> 
                 </div> 
               </CardHeader> 
               <CardContent> 
                 <div className="space-y-3"> 
-                  <p className="text-sm text-[#5E6C84]"> 
+                  <p className="text-sm text-muted-foreground"> 
                     {project.description || "No description"} 
                   </p> 
  
                   <div className="flex items-center gap-4 text-sm"> 
-                    <div className="flex items-center gap-2 text-[#5E6C84]"> 
+                    <div className="flex items-center gap-2 text-muted-foreground"> 
                       <Users className="h-4 w-4" /> 
                       <span>{project.memberIds?.length ?? 0} members</span> 
                     </div> 
-                    <div className="flex items-center gap-2 text-[#5E6C84]"> 
+                    <div className="flex items-center gap-2 text-muted-foreground"> 
                       <span>{projectIssues.length} issues</span> 
                     </div> 
                   </div> 
  
-                  {/* {activeSprint && ( 
-                    <div className="mt-4 p-3 rounded bg-blue-50 border border-blue-200"> 
-                      <div className="flex items-center gap-2 mb-2"> 
-                        <Calendar className="h-4 w-4 text-blue-600" /> 
-                        <span className="font-semibold text-blue-900 text-sm"> 
-                          {activeSprint.name} 
-                        </span> 
-                      </div> 
-                      <p className="text-xs text-blue-700"> 
-                        Active sprint • {activeSprint.goal || "No goal set"} 
-                      </p> 
-                    </div> 
-                  )} */} 
- 
                   <Link href={`/`} onClick={() => setSelectedProject(project)}> 
                     <Button 
                       variant="outline" 
-                      className="w-full mt-4 text-[#0052CC] border-[#0052CC] hover:bg-[#DEEBFF] bg-transparent" 
+                      className="w-full mt-4 text-primary border-primary/40 hover:bg-primary/10 bg-transparent" 
                     > 
                       View Board 
                     </Button> 
@@ -199,9 +185,9 @@ const page = () => {
       </div> 
       {project.length === 0 && ( 
         <div className="flex flex-col items-center justify-center h-full"> 
-          <p className="text-[#5E6C84] mb-4">No projects yet</p> 
+          <p className="text-muted-foreground mb-4">No projects yet</p> 
           <Button 
-            className="bg-[#0052CC] text-white hover:bg-[#0747A6]" 
+            className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20" 
             onClick={redirectproject} 
           > 
             <Plus className="h-4 w-4 mr-2" /> 

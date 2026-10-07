@@ -136,16 +136,16 @@ setActiveSprint(activeSprint);
 
   if (loading) {
     return (
-      <div className="flex h-full items-center justify-center text-sm text-[#6B778C]">
+      <div className="flex h-full items-center justify-center text-sm text-muted-foreground bg-background">
         Loading backlog…
       </div>
     );
   }
   return (
-    <div className="flex h-full flex-col p-6 overflow-hidden">
+    <div className="flex h-full flex-col p-6 overflow-hidden bg-background text-foreground">
       {/* Breadcrumb */}
       <div className="mb-6 flex flex-col gap-4">
-        <div className="flex items-center gap-2 text-sm text-[#5E6C84]">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <span>Projects</span>
           <ChevronRight className="h-4 w-4" />
           <span>{selectedProject?.name}</span>
@@ -154,7 +154,7 @@ setActiveSprint(activeSprint);
         </div>
 
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold text-[#172B4D]">Backlog</h1>
+          <h1 className="text-2xl font-semibold text-foreground tracking-tight">Backlog</h1>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon">
               <Share2 className="h-4 w-4" />
@@ -167,25 +167,18 @@ setActiveSprint(activeSprint);
       </div>
 
       <div className="flex-1 overflow-y-auto space-y-6 pr-2">
-        {/* Sprint Section */}
-        {/* {activeSprint && (
-          <section>
-            <SprintSection sprint={activeSprint} issues={sprintIssues} />
-          </section>
-        )} */}
-
         {/* Backlog Section */}
         <section>
           <SectionHeader title="Backlog" count={backlogIssues.length} />
 
-          <div className="border border-t-0 rounded-b-md divide-y">
+          <div className="border border-t-0 border-border rounded-b-md divide-y divide-border bg-card">
             {backlogIssues.map((issue) => (
               <BacklogItem key={issue.id} issue={issue} />
             ))}
 
             {isCreating ? (
               <form
-                className="p-2"
+                className="p-2 bg-card"
                 onSubmit={(e) => {
                   e.preventDefault();
                   createIssue();
@@ -193,7 +186,7 @@ setActiveSprint(activeSprint);
               >
                 <input
                   autoFocus
-                  className="w-full p-1 border-2 border-[#0052CC] rounded text-sm"
+                  className="w-full p-2 border-2 border-primary rounded-md text-sm bg-background text-foreground focus:outline-none"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   onBlur={() => !newTitle && setIsCreating(false)}
@@ -209,11 +202,11 @@ setActiveSprint(activeSprint);
   );
 };
 const SectionHeader = ({ title, count }: any) => (
-  <div className="flex items-center justify-between bg-[#F4F5F7] p-3 rounded-t-md border-b">
+  <div className="flex items-center justify-between bg-secondary/50 p-3 rounded-t-md border border-border">
     <div className="flex items-center gap-2">
-      <ChevronDown className="h-4 w-4" />
-      <span className="font-semibold">{title}</span>
-      <span className="text-xs ml-2 text-[#5E6C84]">{count} issues</span>
+      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+      <span className="font-semibold text-foreground text-sm">{title}</span>
+      <span className="text-xs ml-2 text-muted-foreground">{count} issues</span>
     </div>
   </div>
 );
@@ -221,7 +214,7 @@ const SectionHeader = ({ title, count }: any) => (
 const SprintSection = ({ sprint, issues }: any) => (
   <>
     <SectionHeader title={sprint.name} count={issues.length} />
-    <div className="border border-t-0 rounded-b-md divide-y">
+    <div className="border border-t-0 border-border rounded-b-md divide-y divide-border bg-card">
       {issues.map((issue: any) => (
         <BacklogItem key={issue.id} issue={issue} />
       ))}
@@ -230,9 +223,9 @@ const SprintSection = ({ sprint, issues }: any) => (
 );
 
 const CreateIssueRow = ({ onClick }: any) => (
-  <div className="p-2 hover:bg-[#F4F5F7] cursor-pointer" onClick={onClick}>
-    <div className="flex items-center gap-2 text-sm text-[#5E6C84]">
-      <Plus className="h-4 w-4" />
+  <div className="p-3 hover:bg-secondary/40 cursor-pointer transition-colors bg-card" onClick={onClick}>
+    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <Plus className="h-4 w-4 text-primary" />
       Create issue
     </div>
   </div>
@@ -240,28 +233,28 @@ const CreateIssueRow = ({ onClick }: any) => (
 const BacklogItem = ({ issue }: any) => {
   const priorityMap = {
     HIGH: "text-red-500",
-    MEDIUM: "text-orange-500",
+    MEDIUM: "text-amber-500",
     LOW: "text-blue-500",
   };
 
   const priorityColor =
-    priorityMap[issue.priority as keyof typeof priorityMap] || "text-gray-500";
+    priorityMap[issue.priority as keyof typeof priorityMap] || "text-muted-foreground";
 
   return (
-    <div className="flex items-center justify-between p-3 hover:bg-[#F4F5F7] group">
+    <div className="flex items-center justify-between p-3 hover:bg-secondary/40 transition-colors group bg-card">
       <div className="flex items-center gap-3 min-w-0">
-        <div className="h-4 w-4 rounded bg-blue-500" />
-        <span className="text-sm text-[#5E6C84]">{issue.key}</span>
-        <span className="truncate">{issue.title}</span>
+        <div className="h-3.5 w-3.5 rounded bg-primary/80 flex-shrink-0" />
+        <span className="text-xs font-bold text-muted-foreground">{issue.key}</span>
+        <span className="truncate text-sm font-medium text-foreground">{issue.title}</span>
       </div>
 
-      <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100">
-        <span className={`text-xs font-bold ${priorityColor}`}>
+      <div className="flex items-center gap-4">
+        <span className={`text-xs font-semibold ${priorityColor}`}>
           {issue.priority}
         </span>
         <Avatar className="h-6 w-6">
           <AvatarImage src={issue.assignee?.avatar} />
-          <AvatarFallback>U</AvatarFallback>
+          <AvatarFallback className="text-[10px]">U</AvatarFallback>
         </Avatar>
       </div>
     </div>

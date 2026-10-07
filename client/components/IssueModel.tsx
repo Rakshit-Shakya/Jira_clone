@@ -357,15 +357,15 @@ const IssueModel = ({ issue, isOpen, onClose }: any) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 gap-0 border-none shadow-2xl">
-        <DialogHeader className="p-4 border-b">
-          <DialogTitle className="text-sm font-semibold text-[#5E6C84]">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0 gap-0 border border-border shadow-2xl bg-card text-card-foreground">
+        <DialogHeader className="p-4 border-b border-border bg-secondary/30">
+          <DialogTitle className="text-sm font-semibold text-muted-foreground">
             {localIssue?.key ? `${localIssue.key}: ${localIssue.title}` : "Loading issue…"}
           </DialogTitle>
         </DialogHeader>
 
         {!localIssue ? (
-          <div className="flex h-64 items-center justify-center text-sm text-[#6B778C]">
+          <div className="flex h-64 items-center justify-center text-sm text-muted-foreground">
             Loading issue…
           </div>
         ) : (
@@ -373,30 +373,30 @@ const IssueModel = ({ issue, isOpen, onClose }: any) => {
             {/* Main */}
             <div className="flex-1 p-6 space-y-6">
               {error && (
-                <div className="flex gap-3 rounded-md bg-red-50 p-3 text-sm text-red-700">
+                <div className="flex gap-3 rounded-md bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20">
                   <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
                   <span>{error}</span>
                 </div>
               )}
 
               <div>
-                <h2 className="text-2xl font-semibold mb-2">
+                <h2 className="text-2xl font-semibold mb-2 text-foreground">
                   {localIssue.title}
                 </h2>
-                <p className="text-sm text-[#42526E]">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {localIssue.description || "No description"}
                 </p>
               </div>
 
               {/* Subtasks Section (Task 1) */}
-              <div className="border-t pt-4">
-                <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                  <GitBranch className="h-4 w-4 text-[#0052CC]" /> Subtasks ({subtasks.length})
+              <div className="border-t border-border pt-4">
+                <h3 className="text-sm font-semibold mb-3 flex items-center gap-2 text-foreground">
+                  <GitBranch className="h-4 w-4 text-primary" /> Subtasks ({subtasks.length})
                 </h3>
                 <div className="space-y-2 mb-3">
                   {subtasks.map((st) => (
-                    <div key={st.id} className="flex items-center justify-between p-2 rounded border bg-white text-sm">
-                      <span className="font-medium text-[#172B4D]">{st.key}: {st.title}</span>
+                    <div key={st.id} className="flex items-center justify-between p-2.5 rounded-md border border-border bg-card text-sm">
+                      <span className="font-medium text-foreground">{st.key}: {st.title}</span>
                       <Badge variant="outline">{st.status}</Badge>
                     </div>
                   ))}
@@ -406,18 +406,18 @@ const IssueModel = ({ issue, isOpen, onClose }: any) => {
                     placeholder="Add subtask title..."
                     value={newSubtaskTitle}
                     onChange={(e) => setNewSubtaskTitle(e.target.value)}
-                    className="h-9"
+                    className="h-9 bg-background border-border text-foreground"
                   />
-                  <Button type="submit" size="sm" className="bg-[#0052CC] text-white">
+                  <Button type="submit" size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
                     <Plus className="h-4 w-4 mr-1" /> Add Subtask
                   </Button>
                 </form>
               </div>
 
               {/* Dependencies Section (Task 1) */}
-              <div className="border-t pt-4">
-                <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                  <Link2 className="h-4 w-4 text-[#0052CC]" /> Dependencies (Blocked By) ({localIssue.dependsOn?.length || 0})
+              <div className="border-t border-border pt-4">
+                <h3 className="text-sm font-semibold mb-3 flex items-center gap-2 text-foreground">
+                  <Link2 className="h-4 w-4 text-primary" /> Dependencies (Blocked By) ({localIssue.dependsOn?.length || 0})
                 </h3>
                 <div className="flex flex-wrap gap-2 mb-3">
                   {localIssue.dependsOn?.map((depId: string) => (
@@ -426,7 +426,7 @@ const IssueModel = ({ issue, isOpen, onClose }: any) => {
                     </Badge>
                   ))}
                   {(!localIssue.dependsOn || localIssue.dependsOn.length === 0) && (
-                    <span className="text-xs text-[#6B778C] italic">No dependencies</span>
+                    <span className="text-xs text-muted-foreground italic">No dependencies</span>
                   )}
                 </div>
                 <form onSubmit={addDependency} className="flex gap-2">
@@ -434,7 +434,7 @@ const IssueModel = ({ issue, isOpen, onClose }: any) => {
                     placeholder="Enter blocker Issue ID..."
                     value={newDependencyId}
                     onChange={(e) => setNewDependencyId(e.target.value)}
-                    className="h-9"
+                    className="h-9 bg-background border-border text-foreground"
                   />
                   <Button type="submit" size="sm" variant="outline">
                     Add Dependency
@@ -443,23 +443,23 @@ const IssueModel = ({ issue, isOpen, onClose }: any) => {
               </div>
 
               {/* Task 6: File Attachments Section */}
-              <div className="border-t pt-4">
-                <h3 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                  <Paperclip className="h-4 w-4 text-[#0052CC]" /> Attachments ({attachments.length})
+              <div className="border-t border-border pt-4">
+                <h3 className="text-sm font-semibold mb-3 flex items-center gap-2 text-foreground">
+                  <Paperclip className="h-4 w-4 text-primary" /> Attachments ({attachments.length})
                 </h3>
                 {uploadError && (
-                  <div className="flex gap-3 rounded-md bg-red-50 p-2 text-xs text-red-700 mb-3">
+                  <div className="flex gap-3 rounded-md bg-destructive/10 p-2 text-xs text-destructive mb-3 border border-destructive/20">
                     <AlertCircle className="h-4 w-4 flex-shrink-0" />
                     <span>{uploadError}</span>
                   </div>
                 )}
                 <div className="space-y-2 mb-3">
                   {attachments.map((att) => (
-                    <div key={att.id} className="flex items-center justify-between p-2 rounded border bg-white text-sm">
+                    <div key={att.id} className="flex items-center justify-between p-2.5 rounded-md border border-border bg-card text-sm">
                       <div className="flex items-center gap-2 overflow-hidden">
-                        <FileText className="h-4 w-4 text-[#5E6C84] flex-shrink-0" />
-                        <span className="font-medium text-[#172B4D] truncate">{att.originalFilename}</span>
-                        <span className="text-xs text-[#6B778C]">({(att.sizeBytes / 1024).toFixed(1)} KB)</span>
+                        <FileText className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                        <span className="font-medium text-foreground truncate">{att.originalFilename}</span>
+                        <span className="text-xs text-muted-foreground">({(att.sizeBytes / 1024).toFixed(1)} KB)</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Button
@@ -468,7 +468,7 @@ const IssueModel = ({ issue, isOpen, onClose }: any) => {
                           onClick={() => handleDownloadAttachment(att)}
                           title="Download"
                         >
-                          <Download className="h-4 w-4 text-[#0052CC]" />
+                          <Download className="h-4 w-4 text-primary" />
                         </Button>
                         <Button
                           size="sm"
@@ -476,13 +476,13 @@ const IssueModel = ({ issue, isOpen, onClose }: any) => {
                           onClick={() => handleDeleteAttachment(att.id)}
                           title="Delete"
                         >
-                          <Trash2 className="h-4 w-4 text-red-600" />
+                          <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
                       </div>
                     </div>
                   ))}
                   {attachments.length === 0 && (
-                    <p className="text-xs text-[#6B778C] italic">No files attached yet (PDF, PNG, JPG, DOCX up to 10MB)</p>
+                    <p className="text-xs text-muted-foreground italic">No files attached yet (PDF, PNG, JPG, DOCX up to 10MB)</p>
                   )}
                 </div>
                 <div className="flex items-center gap-2">
@@ -491,18 +491,18 @@ const IssueModel = ({ issue, isOpen, onClose }: any) => {
                     ref={fileInputRef}
                     onChange={handleFileUpload}
                     accept=".pdf,.png,.jpg,.jpeg,.docx"
-                    className="text-xs text-[#6B778C]"
+                    className="text-xs text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
                     disabled={uploading}
                   />
-                  {uploading && <span className="text-xs text-[#0052CC]">Uploading...</span>}
+                  {uploading && <span className="text-xs text-primary animate-pulse">Uploading...</span>}
                 </div>
               </div>
 
               {/* Task 2: Time Tracking / Work Logs Section */}
-              <div className="border-t pt-4">
+              <div className="border-t border-border pt-4">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-semibold flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-[#0052CC]" /> Work Logs
+                  <h3 className="text-sm font-semibold flex items-center gap-2 text-foreground">
+                    <Clock className="h-4 w-4 text-primary" /> Work Logs
                   </h3>
                   <Badge variant="outline" className="font-mono">
                     Total: {formatMinutes(totalMinutes)}
@@ -510,7 +510,7 @@ const IssueModel = ({ issue, isOpen, onClose }: any) => {
                 </div>
 
                 {worklogError && (
-                  <div className="flex gap-3 rounded-md bg-red-50 p-2 text-xs text-red-700 mb-3">
+                  <div className="flex gap-3 rounded-md bg-destructive/10 p-2 text-xs text-destructive mb-3 border border-destructive/20">
                     <AlertCircle className="h-4 w-4 flex-shrink-0" />
                     <span>{worklogError}</span>
                   </div>
@@ -518,11 +518,11 @@ const IssueModel = ({ issue, isOpen, onClose }: any) => {
 
                 <div className="space-y-2 mb-4">
                   {worklogs.map((wl) => (
-                    <div key={wl.id} className="flex items-center justify-between p-2 rounded border bg-white text-sm">
+                    <div key={wl.id} className="flex items-center justify-between p-2.5 rounded-md border border-border bg-card text-sm">
                       <div>
-                        <span className="font-semibold text-[#172B4D]">{formatMinutes(wl.durationMinutes)}</span>
-                        <span className="text-xs text-[#6B778C] ml-2">on {wl.date}</span>
-                        {wl.description && <p className="text-xs text-[#42526E] mt-0.5">{wl.description}</p>}
+                        <span className="font-semibold text-foreground">{formatMinutes(wl.durationMinutes)}</span>
+                        <span className="text-xs text-muted-foreground ml-2">on {wl.date}</span>
+                        {wl.description && <p className="text-xs text-muted-foreground mt-0.5">{wl.description}</p>}
                       </div>
                       <Button
                         size="sm"
@@ -530,38 +530,38 @@ const IssueModel = ({ issue, isOpen, onClose }: any) => {
                         onClick={() => handleDeleteWorklog(wl.id)}
                         title="Delete entry"
                       >
-                        <Trash2 className="h-4 w-4 text-red-600" />
+                        <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </div>
                   ))}
                   {worklogs.length === 0 && (
-                    <p className="text-xs text-[#6B778C] italic">No time logged yet</p>
+                    <p className="text-xs text-muted-foreground italic">No time logged yet</p>
                   )}
                 </div>
 
                 {/* Add Work Log Form */}
-                <form onSubmit={handleCreateWorklog} className="space-y-2 bg-[#F4F5F7] p-3 rounded-md">
+                <form onSubmit={handleCreateWorklog} className="space-y-2 bg-secondary/40 p-3 rounded-md border border-border">
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="text-xs text-[#5E6C84]">Date</label>
+                      <label className="text-xs text-muted-foreground font-medium">Date</label>
                       <Input
                         type="date"
                         value={logDate}
                         max={new Date().toISOString().split("T")[0]}
                         onChange={(e) => setLogDate(e.target.value)}
-                        className="h-8 text-xs"
+                        className="h-8 text-xs bg-background border-border text-foreground"
                         required
                       />
                     </div>
                     <div>
-                      <label className="text-xs text-[#5E6C84]">Duration (Minutes)</label>
+                      <label className="text-xs text-muted-foreground font-medium">Duration (Minutes)</label>
                       <Input
                         type="number"
                         min="1"
                         placeholder="e.g. 60"
                         value={logDuration}
                         onChange={(e) => setLogDuration(e.target.value)}
-                        className="h-8 text-xs"
+                        className="h-8 text-xs bg-background border-border text-foreground"
                         required
                       />
                     </div>
@@ -571,11 +571,11 @@ const IssueModel = ({ issue, isOpen, onClose }: any) => {
                       placeholder="Work description (optional)..."
                       value={logDescription}
                       onChange={(e) => setLogDescription(e.target.value)}
-                      className="h-8 text-xs"
+                      className="h-8 text-xs bg-background border-border text-foreground"
                     />
                   </div>
                   <div className="flex justify-end">
-                    <Button type="submit" size="sm" className="bg-[#0052CC] text-white h-8 text-xs">
+                    <Button type="submit" size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 h-8 text-xs">
                       <Plus className="h-3 w-3 mr-1" /> Log Time
                     </Button>
                   </div>
@@ -583,8 +583,8 @@ const IssueModel = ({ issue, isOpen, onClose }: any) => {
               </div>
 
               {/* Comments Section */}
-              <div className="border-t pt-4">
-                <h3 className="text-sm font-semibold mb-4">
+              <div className="border-t border-border pt-4">
+                <h3 className="text-sm font-semibold mb-4 text-foreground">
                   Comments ({localIssue.comments?.length || 0})
                 </h3>
 
@@ -595,9 +595,9 @@ const IssueModel = ({ issue, isOpen, onClose }: any) => {
                         (comment: any, index: number) => (
                           <div
                             key={index}
-                            className="rounded-md border border-[#DFE1E6] bg-[#F4F5F7] p-3"
+                            className="rounded-md border border-border bg-secondary/40 p-3"
                           >
-                            <p className="text-sm text-[#172B4D] whitespace-pre-wrap">
+                            <p className="text-sm text-foreground whitespace-pre-wrap">
                               {typeof comment === "string" ? comment : comment.text}
                             </p>
                           </div>
@@ -605,7 +605,7 @@ const IssueModel = ({ issue, isOpen, onClose }: any) => {
                       )}
                     </div>
                   ) : (
-                    <p className="text-sm text-[#6B778C] italic">
+                    <p className="text-sm text-muted-foreground italic">
                       No comments yet
                     </p>
                   )}
@@ -621,11 +621,12 @@ const IssueModel = ({ issue, isOpen, onClose }: any) => {
                       placeholder="Add a comment..."
                       value={commentText}
                       onChange={(e) => setCommentText(e.target.value)}
+                      className="bg-background border-border text-foreground"
                     />
                     <div className="flex justify-end mt-2">
                       <Button
                         size="sm"
-                        className="bg-[#0052CC] text-white"
+                        className="bg-primary text-primary-foreground hover:bg-primary/90"
                         disabled={!commentText || loading}
                         onClick={saveComment}
                       >
@@ -638,43 +639,43 @@ const IssueModel = ({ issue, isOpen, onClose }: any) => {
             </div>
 
             {/* Sidebar */}
-            <div className="w-full md:w-[280px] p-6 border-l bg-[#F4F5F7]">
+            <div className="w-full md:w-[280px] p-6 border-l border-border bg-secondary/20">
               <div className="space-y-5">
                 <div>
-                  <h3 className="text-xs font-bold uppercase mb-1">Status</h3>
+                  <h3 className="text-xs font-bold uppercase mb-1 text-muted-foreground tracking-wider">Status</h3>
                   <Badge>{localIssue.status}</Badge>
                 </div>
 
                 <div>
-                  <h3 className="text-xs font-bold uppercase mb-1">Type</h3>
-                  <span>
+                  <h3 className="text-xs font-bold uppercase mb-1 text-muted-foreground tracking-wider">Type</h3>
+                  <span className="text-sm font-medium text-foreground flex items-center gap-1.5">
                     {typeIcons[localIssue.type] || "📌"} {localIssue.type}
                   </span>
                 </div>
 
                 <div>
-                  <h3 className="text-xs font-bold uppercase mb-1">Priority</h3>
+                  <h3 className="text-xs font-bold uppercase mb-1 text-muted-foreground tracking-wider">Priority</h3>
                   <Badge>{priorityLabels[localIssue.priority] || localIssue.priority}</Badge>
                 </div>
 
                 <div>
-                  <h3 className="text-xs font-bold uppercase mb-1">Assignee</h3>
+                  <h3 className="text-xs font-bold uppercase mb-1 text-muted-foreground tracking-wider">Assignee</h3>
                   {assignee ? (
                     <div className="flex items-center gap-2">
                       <Avatar className="h-6 w-6">
                         <AvatarImage src={assignee.avatar} />
                         <AvatarFallback>{assignee.name?.[0] || "U"}</AvatarFallback>
                       </Avatar>
-                      <span className="text-sm">{assignee.name}</span>
+                      <span className="text-sm text-foreground font-medium">{assignee.name}</span>
                     </div>
                   ) : (
-                    <span className="text-sm italic">Unassigned</span>
+                    <span className="text-sm text-muted-foreground italic">Unassigned</span>
                   )}
                 </div>
 
-                <div className="border-t pt-3">
-                  <h3 className="text-xs font-bold uppercase mb-1">Time Logged</h3>
-                  <span className="text-sm font-semibold text-[#172B4D]">
+                <div className="border-t border-border pt-3">
+                  <h3 className="text-xs font-bold uppercase mb-1 text-muted-foreground tracking-wider">Time Logged</h3>
+                  <span className="text-sm font-semibold text-foreground">
                     {formatMinutes(totalMinutes)}
                   </span>
                 </div>

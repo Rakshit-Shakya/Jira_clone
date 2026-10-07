@@ -115,21 +115,21 @@ const CreateIssuemodel = ({ isOpen, onClose }: any) => {
   // ];
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl bg-card border-border text-card-foreground">
         <DialogHeader>
-          <DialogTitle>Create Issue</DialogTitle>
+          <DialogTitle className="text-card-foreground">Create Issue</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="flex gap-3 rounded-md bg-red-50 p-3 text-sm text-red-700">
+            <div className="flex gap-3 rounded-md bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20">
               <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-[#172B4D]">
+            <label className="text-sm font-semibold text-foreground">
               Issue Title *
             </label>
             <Input
@@ -137,20 +137,20 @@ const CreateIssuemodel = ({ isOpen, onClose }: any) => {
               name="title"
               placeholder="e.g., Implement user authentication"
               required
-              className="h-10 border-[#DFE1E6] focus-visible:ring-[#0052CC]"
+              className="h-10 border-border bg-background text-foreground focus-visible:ring-primary"
               value={formData.title}
               onChange={handleChange}
             />
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-[#172B4D]">
+            <label className="text-sm font-semibold text-foreground">
               Description
             </label>
             <Textarea
               name="description"
               placeholder="Add a description (optional)"
-              className="min-h-[100px] border-[#DFE1E6] focus-visible:ring-[#0052CC] resize-none"
+              className="min-h-[100px] border-border bg-background text-foreground focus-visible:ring-primary resize-none"
               value={formData.description}
               onChange={handleChange}
             />
@@ -158,12 +158,12 @@ const CreateIssuemodel = ({ isOpen, onClose }: any) => {
 
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#172B4D]">
+              <label className="text-sm font-semibold text-foreground">
                 Type
               </label>
               <select
                 name="type"
-                className="w-full h-10 rounded border border-[#DFE1E6] bg-white px-3 text-sm text-[#172B4D] focus-visible:ring-2 focus-visible:ring-[#0052CC]"
+                className="w-full h-10 rounded-md border border-border bg-background px-3 text-sm text-foreground focus-visible:ring-2 focus-visible:ring-primary outline-none"
                 value={formData.type}
                 onChange={handleChange}
               >
@@ -174,12 +174,12 @@ const CreateIssuemodel = ({ isOpen, onClose }: any) => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#172B4D]">
+              <label className="text-sm font-semibold text-foreground">
                 Priority
               </label>
               <select
                 name="priority"
-                className="w-full h-10 rounded border border-[#DFE1E6] bg-white px-3 text-sm text-[#172B4D] focus-visible:ring-2 focus-visible:ring-[#0052CC]"
+                className="w-full h-10 rounded-md border border-border bg-background px-3 text-sm text-foreground focus-visible:ring-2 focus-visible:ring-primary outline-none"
                 value={formData.priority}
                 onChange={handleChange}
               >
@@ -190,12 +190,12 @@ const CreateIssuemodel = ({ isOpen, onClose }: any) => {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-[#172B4D]">
+              <label className="text-sm font-semibold text-foreground">
                 Assignee
               </label>
               <select
                 name="assigneeId"
-                className="w-full h-10 rounded border border-[#DFE1E6] bg-white px-3 text-sm text-[#172B4D] focus-visible:ring-2 focus-visible:ring-[#0052CC]"
+                className="w-full h-10 rounded-md border border-border bg-background px-3 text-sm text-foreground focus-visible:ring-2 focus-visible:ring-primary outline-none"
                 value={formData.assigneeId || ""}
                 onChange={handleChange}
               >
@@ -209,13 +209,13 @@ const CreateIssuemodel = ({ isOpen, onClose }: any) => {
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 pt-4 border-t">
+          <div className="flex justify-end gap-2 pt-4 border-t border-border">
             <Button variant="outline" onClick={onClose} disabled={isloading}>
               Cancel
             </Button>
             <Button
               type="submit"
-              className="bg-[#0052CC] text-white hover:bg-[#0747A6]"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20"
               disabled={isloading}
             >
               {isloading ? "Creating..." : "Create Issue"}

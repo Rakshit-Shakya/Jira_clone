@@ -126,7 +126,7 @@ const KanbanBoard = () => {
 
   if (!selectedProject) {
     return (
-      <div className="flex h-full items-center justify-center text-sm text-[#6B778C]">
+      <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
         Select a project to view the board
       </div>
     );
@@ -140,7 +140,7 @@ const KanbanBoard = () => {
       onDragEnd={onDragEnd}
     >
       {loading ? (
-        <div className="flex h-full items-center justify-center text-sm text-[#6B778C]">
+        <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
           Loading board…
         </div>
       ) : (

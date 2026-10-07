@@ -89,35 +89,35 @@ router.push("/");
   };
 
   return (
-    <div className="p-8">
+    <div className="p-8 bg-background text-foreground min-h-full">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#172B4D]">
+        <h1 className="text-3xl font-bold text-foreground tracking-tight">
           Create a new project
         </h1>
-        <p className="text-[#5E6C84] text-sm mt-2">
+        <p className="text-muted-foreground text-sm mt-2">
           Set up a new project to start managing your work
         </p>
       </div>
 
       <div className="max-w-md">
-        <Card className="border shadow-md">
+        <Card className="border border-border shadow-md bg-card">
           <CardHeader>
-            <CardTitle className="text-lg">Project details</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-lg text-card-foreground">Project details</CardTitle>
+            <CardDescription className="text-muted-foreground">
               Provide basic information about your project
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleCreateProject} className="space-y-4">
               {error && (
-                <div className="flex gap-3 rounded-md bg-red-50 p-3 text-sm text-red-700">
+                <div className="flex gap-3 rounded-md bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20">
                   <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
                   <span>{error}</span>
                 </div>
               )}
 
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase text-[#6B778C]">
+                <label className="text-xs font-bold uppercase text-muted-foreground tracking-wider">
                   Project name
                 </label>
                 <Input
@@ -125,14 +125,14 @@ router.push("/");
                   name="name"
                   placeholder="e.g., Platform Services"
                   required
-                  className="h-10 border-[#DFE1E6] focus-visible:ring-[#0052CC]"
+                  className="h-10 border-border bg-background text-foreground focus-visible:ring-primary"
                   value={projectData.name}
                   onChange={handleInputChange}
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold uppercase text-[#6B778C]">
+                <label className="text-xs font-bold uppercase text-muted-foreground tracking-wider">
                   Project key
                 </label>
                 <Input
@@ -141,11 +141,11 @@ router.push("/");
                   placeholder="e.g., PS"
                   maxLength={5}
                   required
-                  className="h-10 border-[#DFE1E6] focus-visible:ring-[#0052CC]"
+                  className="h-10 border-border bg-background text-foreground focus-visible:ring-primary"
                   value={projectData.key}
                   onChange={handleInputChange}
                 />
-                <p className="text-xs text-[#6B778C]">
+                <p className="text-xs text-muted-foreground">
                   Used for issue keys (e.g., {projectData.key || "PS"}-1).
                   Letters only, max 5 characters.
                 </p>
@@ -155,7 +155,7 @@ router.push("/");
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-[#0052CC] text-white hover:bg-[#0747A6]"
+                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90 shadow-md shadow-primary/20"
                 >
                   {isLoading ? "Creating..." : "Create project"}
                   {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
@@ -166,7 +166,7 @@ router.push("/");
                   variant="outline"
                   onClick={() => router.back()}
                   disabled={isLoading}
-                  className="w-full"
+                  className="w-full bg-transparent"
                 >
                   Cancel
                 </Button>
